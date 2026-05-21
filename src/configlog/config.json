@@ -12,5 +12,9 @@
     "feature_flags": {
         "enable_new_ui": true,
         "beta_users_only": false
-    }
+    },
+    "some_flags": {
+        "nothing": false
+    },
+    "version": 1
 }

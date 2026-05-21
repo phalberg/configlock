@@ -2,23 +2,36 @@ import typer
 import json
 #from datetime import datetime
 
-from helper import traverse, read_yaml
+from helper import read_yaml, write_json
 
 app = typer.Typer()
 
 @app.command()
-def sync(file_path: str):
+def init(file_path: str):
     """
     Reads a YAML config and generates a lockfile.
     """
-
+    # check if it has already been created or not here! 
     data=read_yaml(file_path)
 
-    # write to a .json file
-    with open('config.json', 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    write_json(data)
+
+
+@app.command()
+def sync(file_path: str):
+
+    # make sure init has been ran
+    init(file_path)
+
+    # then 
+
+
 
 
     
 if __name__ == "__main__":
     app()
+
+
+
+

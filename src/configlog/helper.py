@@ -1,5 +1,6 @@
 import typer
 import yaml
+import json
 
 
 def traverse(node):
@@ -26,3 +27,17 @@ def read_yaml(file_path: str):
     else:
         typer.echo(f"Sucessfully read file")
     return data
+
+
+    
+def write_json(data: dict, file_path: str | None = "config.json") -> None:
+    data.update({"version": 1})
+    try:
+        with open(file_path, 'w') as json_file:
+            json.dump(data, json_file, indent=4)
+    except TypeError:
+        raise
+    except Exception:
+        raise
+    else:
+        typer.echo(f"Sucessfully wrote file")
