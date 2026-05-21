@@ -38,3 +38,16 @@ def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None
         raise
     else:
         typer.echo(f"Sucessfully wrote file")
+
+
+def check_compatibility():
+
+    """"
+    Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
+Values => must be of the same types
+What about adding New entries? -> Fine
+Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
+    """
+
+
+    pass

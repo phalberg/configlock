@@ -19,13 +19,14 @@ def init(file_path: str) -> None:
 @app.command()
 def sync(file_path: str):
     """
-    used to sync the lock file
+    Used to sync the lock file if compatible
     """
 
     # make sure init has been ran
     init(file_path)
 
     # then 
+    check_compatibility()
 
 
 
