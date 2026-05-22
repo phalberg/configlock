@@ -1,9 +1,19 @@
 import typer
 import yaml
 import json
+from enum import Enum
 from pathlib import Path
 
+
+
 CONFIG_LOG_FILE_PATH = "config.lock.json"
+
+class FileFormat(Enum):
+    YAML = "yaml"
+    JSON = "json"
+
+SUPPORTED = {FileFormat.YAML, FileFormat.JSON}
+active_formats = [f.name for f in FileFormat if f in SUPPORTED]
 
 
 
@@ -14,8 +24,7 @@ def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
 
 
 
-def read_yaml(file_path: str):
-    typer.echo(f"Reading {file_path}...")
+def read_yaml(file_path: str) -> dict:
     try:
         with open(file_path, "r") as f:
             data = yaml.safe_load(f)
@@ -26,7 +35,7 @@ def read_yaml(file_path: str):
     return data
 
 
-def read_json(file_path: str):
+def read_json(file_path: str) -> dict:
     try:
         with open(file_path, "r") as f:
             data = json.load(f)
@@ -49,6 +58,26 @@ def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None
         typer.echo(f"Sucessfully wrote file")
 
 
+def check_file_and_read_file(file_path: str) -> dict:
+    typer.echo(f"Reading {file_path}...")
+
+    path = Path(file_path)
+    suffix = path.suffix.lower()
+
+
+    if suffix in [".yaml", ".yml"]:
+        data = read_yaml(file_path)
+    elif(suffix == ".json"):
+        data = read_json(file_path)
+    else:
+        typer.echo(f"File not suppported: {suffix}", err=True)
+        typer.echo(f"Was not able to read the file, make sure it is any of the following types: {active_formats}", err=True)
+        raise ValueError("Error not able to read the file")
+
+    return data
+
+
+
 def check_compatibility(file_path: str):
     """"
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
@@ -59,11 +88,14 @@ def check_compatibility(file_path: str):
 
     # implement some DFS algorithm to run this.
 
-    current_file = CONFIG_LOG_FILE_PATH
-    new_file = file_path
+    current_file_path = CONFIG_LOG_FILE_PATH
+    new_file_path = file_path
 
+    
 
+    current_data = read_json(current_file_path)
+    new_data = check_file_and_read_file(new_file_path)
 
-
+    
 
     pass
