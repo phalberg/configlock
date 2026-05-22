@@ -15,6 +15,7 @@ class SupportedFiles(Enum):
     TOML = []
 
 active_formats = [f for f in SupportedFiles if f.value]
+keys_to_ignore = {"version"}
 
 
 
@@ -79,7 +80,7 @@ def check_file_and_read_file(file_path: str) -> dict:
 
 
 
-def check_compatibility(file_path: str):
+def check_compatibility(file_path: str) -> None:
     """"
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
     Values => must be of the same types
@@ -102,11 +103,14 @@ def check_compatibility(file_path: str):
         old_k, old_v = old_pair
 
         # specific values for our own interpretation of versionings etc.
-        if old_k == "version":
+        if old_k in keys_to_ignore:
             continue
+
+        if old_k != new_k:
+            typer.echo(f"A key is missing or changed from {old_k} to {new_k}")
+            raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
 
         typer.echo(f" Old values: {old_k} {old_v}")
         typer.echo(f" New proposed values: {new_k} {new_v}")
 
 
-    pass
