@@ -26,6 +26,15 @@ def read_yaml(file_path: str):
     return data
 
 
+def read_json(file_path: str):
+    try:
+        with open(file_path, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise
+    else:
+        typer.echo(f"Sucessfully read file")
+    return data
     
 def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None:
     data.update({"version": 1})
@@ -40,14 +49,21 @@ def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None
         typer.echo(f"Sucessfully wrote file")
 
 
-def check_compatibility():
-
+def check_compatibility(file_path: str):
     """"
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
-Values => must be of the same types
-What about adding New entries? -> Fine
-Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
+    Values => must be of the same types
+    What about adding New entries? -> Fine
+    Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
     """
+
+    # implement some DFS algorithm to run this.
+
+    current_file = CONFIG_LOG_FILE_PATH
+    new_file = file_path
+
+
+
 
 
     pass

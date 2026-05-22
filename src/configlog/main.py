@@ -1,8 +1,20 @@
 import typer
 
-from helper import read_yaml, write_json, check_file_exists
+from helper import read_yaml, read_json, write_json, check_file_exists
+
+from enum import Enum
+
+class FileFormat(Enum):
+    YAML = "yaml"
+    JSON = "json"
 
 app = typer.Typer()
+SUPPORTED = {FileFormat.YAML, FileFormat.JSON}
+
+
+
+active_formats = [f.name for f in FileFormat if f in SUPPORTED]
+    
 
 @app.command()
 def init(file_path: str) -> None:
@@ -12,8 +24,14 @@ def init(file_path: str) -> None:
     if check_file_exists():
         typer.echo("File already exists!")
     else:
-        data=read_yaml(file_path)
-        write_json(data)
+        try:
+            data= read_yaml(file_path)
+        except FileNotFoundError:
+            data = read_json(file_path)
+        else:
+            typer.echo(f"Was not able to read the file, make sure it is any of the following types: {active_formats}")
+        
+    write_json(data)
 
 
 @app.command()
@@ -23,10 +41,13 @@ def sync(file_path: str):
     """
 
     # make sure init has been ran
-    init(file_path)
+    #init(file_path)
+    # assume the old file already exists:
+
+
 
     # then 
-    check_compatibility()
+    check_compatibility(file_path)
 
 
 
