@@ -30,6 +30,7 @@ def init(file_path: str) -> None:
             data = read_json(file_path)
         else:
             typer.echo(f"Was not able to read the file, make sure it is any of the following types: {active_formats}")
+            raise
         
     write_json(data)
 
