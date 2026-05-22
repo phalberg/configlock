@@ -29,10 +29,10 @@ def sync(file_path: str):
     #init(file_path)
     # assume the old file already exists:
 
-
-
     # then 
     check_compatibility(file_path)
+    data = check_file_and_read_file(file_path)
+    write_json(data)
 
 
 

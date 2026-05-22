@@ -16,5 +16,8 @@
     "some_flags": {
         "nothing": false
     },
+    "new_flag": {
+        "as_a_test": true
+    },
     "version": 1
 }

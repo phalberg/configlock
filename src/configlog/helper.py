@@ -107,8 +107,11 @@ def check_compatibility(file_path: str) -> None:
             continue
 
         if old_k != new_k:
-            typer.echo(f"A key is missing or changed from {old_k} to {new_k}")
+            typer.echo(f"A key is missing or changed from {old_k} to {new_k}", err=True)
             raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
+
+
+
 
         typer.echo(f" Old values: {old_k} {old_v}")
         typer.echo(f" New proposed values: {new_k} {new_v}")
