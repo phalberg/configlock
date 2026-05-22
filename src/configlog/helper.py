@@ -4,16 +4,17 @@ import json
 from enum import Enum
 from pathlib import Path
 
+from itertools import zip_longest
 
 
 CONFIG_LOG_FILE_PATH = "config.lock.json"
 
-class FileFormat(Enum):
-    YAML = "yaml"
-    JSON = "json"
+class SupportedFiles(Enum):
+    YAML = ["yaml", "yml"]
+    JSON = ["json"]
+    TOML = []
 
-SUPPORTED = {FileFormat.YAML, FileFormat.JSON}
-active_formats = [f.name for f in FileFormat if f in SUPPORTED]
+active_formats = [f for f in SupportedFiles if f.value]
 
 
 
@@ -96,6 +97,16 @@ def check_compatibility(file_path: str):
     current_data = read_json(current_file_path)
     new_data = check_file_and_read_file(new_file_path)
 
-    
+    for (new_k, new_v), old_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
+
+        old_k, old_v = old_pair
+
+        # specific values for our own interpretation of versionings etc.
+        if old_k == "version":
+            continue
+
+        typer.echo(f" Old values: {old_k} {old_v}")
+        typer.echo(f" New proposed values: {new_k} {new_v}")
+
 
     pass
