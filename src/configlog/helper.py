@@ -98,22 +98,71 @@ def check_compatibility(file_path: str) -> None:
     current_data = read_json(current_file_path)
     new_data = check_file_and_read_file(new_file_path)
 
-    for (new_k, new_v), old_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
+
+    walk_yaml(current_data, new_data)
+
+"""     for (new_k, new_v), old_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
 
         old_k, old_v = old_pair
 
         # specific values for our own interpretation of versionings etc.
         if old_k in keys_to_ignore:
             continue
-
+        
+        # The keys must match
         if old_k != new_k:
             typer.echo(f"A key is missing or changed from {old_k} to {new_k}", err=True)
             raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
 
+        
+
+        
+
+        typer.echo(f" Old values: {old_v}")
+        typer.echo(f" New proposed values: {new_v}") """
 
 
 
-        typer.echo(f" Old values: {old_k} {old_v}")
-        typer.echo(f" New proposed values: {new_k} {new_v}")
 
 
+def walk_yaml(current_data, new_data, depth=0):
+    """Recursively walks through a YAML-loaded object."""
+    # Indentation for visual clarity during printing
+    indent = "  " * depth
+
+    if isinstance(current_data, dict):
+        #for key, value in current_data.items():
+        for new_pair, old_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
+            new_k, new_v = new_pair
+            old_k, old_v = old_pair
+
+
+             # specific values for our own interpretation of versionings etc.
+            if old_k in keys_to_ignore:
+                continue
+        
+
+            if old_k != new_k:
+                typer.echo(f"A key is missing or changed from {old_k} to {new_k}", err=True)
+                raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
+
+
+
+            print(f"{indent}New key: {new_k}, old key: {old_k}")
+            walk_yaml(new_v, old_v , depth + 1)
+            
+    elif isinstance(current_data, list):
+        for index, item in enumerate(current_data):
+            print(f"{indent}Index {index}:")
+            walk_yaml(item, depth + 1)
+            
+    else:
+        # Base case: The value is a scalar (string, int, etc.)
+
+        if type(current_data) != type(new_data):
+                typer.echo(f"The type of a value has changed from {type(current_data)} to {type(new_data)}", err=True)
+                raise ValueError(f"New proposed file does not match value type of lock file in {CONFIG_LOG_FILE_PATH}")
+
+        
+
+        print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
