@@ -16,16 +16,6 @@ def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     exists = False
     if not path.exists():
         typer.echo(f"The path does not exist: {path}", err=True)
-    if not path.is_file():
-        typer.echo(f"Make sure the it is a file: {path}", err=True)
-    try:
-        with path.open("r") as f:
-            exists = True
-    except PermissionError:
-            typer.echo(f"No access to file at: {path}", err=True)
-    except OSError as e:
-            typer.echo(f"Systemfault try again", err=True)
-
     return exists
 
 
