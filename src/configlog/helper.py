@@ -72,8 +72,7 @@ def check_file_and_read_file(file_path: str) -> dict:
     elif(suffix == ".json"):
         data = read_json(file_path)
     else:
-        typer.echo(f"File not suppported: {suffix}", err=True)
-        typer.echo(f"Was not able to read the file, make sure it is any of the following types: {active_formats}", err=True)
+        typer.echo(f"File not suppported: {suffix} was not able to read the file, make sure it is any of the following types: {active_formats}", err=True)
         raise ValueError("Error not able to read the file")
 
     return data
