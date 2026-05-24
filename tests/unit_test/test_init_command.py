@@ -1,12 +1,11 @@
 from typer.testing import CliRunner
 from configlog import main
-import pytest
 
 runner = CliRunner()
 
 
 
-def test__init_command():
+def test_init_valueerror_path_error():
 
     with runner.isolated_filesystem():
         result = runner.invoke(main.app, ["init", "not_available_path"])
@@ -15,5 +14,11 @@ def test__init_command():
     assert isinstance(result.exception, ValueError)
     assert "read the file" in str(result.exception)
   
+  
+def test_init_path_already_exits():
+    
+    pass
+
+
 
     

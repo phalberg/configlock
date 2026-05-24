@@ -1,27 +1,31 @@
 import typer
 import yaml
 import json
-from enum import Enum
 from pathlib import Path
 
 from itertools import zip_longest
 
 
 CONFIG_LOG_FILE_PATH = "config.lock.json"
-
-class SupportedFiles(Enum):
-    YAML = ["yaml", "yml"]
-    JSON = ["json"]
-    TOML = []
-
-active_formats = [f for f in SupportedFiles if f.value]
 keys_to_ignore = {"version"}
 
 
 
 def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     path = Path(file_path)
-    exists = Path.is_file(path)
+    exists = False
+    if not path.exists():
+        typer.echo(f"The path does not exist: {path}", err=True)
+    if not path.is_file():
+        typer.echo(f"Make sure the it is a file: {path}", err=True)
+    try:
+        with path.open("r") as f:
+            exists = True
+    except PermissionError:
+            typer.echo(f"No access to file at: {path}", err=True)
+    except OSError as e:
+            typer.echo(f"Systemfault try again", err=True)
+
     return exists
 
 
@@ -66,14 +70,21 @@ def check_file_and_read_file(file_path: str) -> dict:
     path = Path(file_path)
     suffix = path.suffix.lower()
 
+    reader_by_suffix = {
+        ".yaml": read_yaml,
+        ".yml": read_yaml,
+        ".json": read_json,
+    }
 
-    if suffix in [".yaml", ".yml"]:
-        data = read_yaml(file_path)
-    elif(suffix == ".json"):
-        data = read_json(file_path)
-    else:
-        typer.echo(f"File not suppported: {suffix} was not able to read the file, make sure it is any of the following types: {active_formats}", err=True)
+    reader = reader_by_suffix.get(suffix)
+    if reader is None:
+        typer.echo(
+            f"File not suppported: {suffix}. Use .yaml, .yml, or .json.",
+            err=True,
+        )
         raise ValueError("Error not able to read the file")
+
+    data = reader(file_path)
 
     return data
 
