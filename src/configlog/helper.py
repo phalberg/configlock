@@ -108,7 +108,6 @@ def walk_yaml(current_data, new_data, depth=0):
     indent = "  " * depth
 
     if isinstance(current_data, dict):
-        #for key, value in current_data.items():
         for new_pair, curr_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
             new_k, new_v = new_pair
             curr_k, curr_v = curr_pair
@@ -124,20 +123,13 @@ def walk_yaml(current_data, new_data, depth=0):
             print(f"{indent}New key: {new_k}, old key: {curr_k}, {type(curr_k)}")
             walk_yaml(new_v, curr_v , depth + 1)
             
-    elif isinstance(current_data, list):
-        for index, item in enumerate(current_data):
-            print(f"{indent}Index {index}:")
-            walk_yaml(item, depth + 1)
+ #   elif isinstance(current_data, list):
+ #       for index, item in enumerate(current_data):
+ #           print(f"{indent}Index {index}:")
+ #           walk_yaml(item, depth + 1)
             
     else:
-        # Base case: The value is a scalar (string, int, etc.)
-
-        if type(current_data) != type(new_data):
-                typer.echo(f"The type of a value has changed from {type(current_data)} to {type(new_data)}", err=True)
-                raise ValueError(f"New proposed file does not match value type of lock file in {CONFIG_LOG_FILE_PATH}")
-
-
-
+        accept_new_value(current_value=current_data, new_value=new_data)
         print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
 
 
@@ -161,7 +153,6 @@ def accept_new_value(current_value, new_value) -> None:
     General logic for accepting new values:
     1) the type of the new_value cannot be different than the type of the current_value
     """
-
 
     if type(current_value) != type(new_value):
             typer.echo(f"The type of a value has changed from {type(current_value)} to {type(new_value)}", err=True)
