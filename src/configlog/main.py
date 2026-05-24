@@ -1,6 +1,6 @@
 import typer
 
-from helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file
+from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file
 
 
 app = typer.Typer()

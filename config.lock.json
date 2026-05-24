@@ -1,0 +1,23 @@
+{
+    "app_settings": {
+        "environment": "staging",
+        "maintenance_mode": false,
+        "timeout_seconds": 30
+    },
+    "ai_prompts": {
+        "system_prompt": "You are a helpful assistant.",
+        "temperature": 0.7,
+        "max_tokens": 1500
+    },
+    "feature_flags": {
+        "enable_new_ui": true,
+        "beta_users_only": false
+    },
+    "some_flags": {
+        "nothing": false
+    },
+    "new_flag": {
+        "as_a_test": true
+    },
+    "version": 1
+}
