@@ -15,8 +15,7 @@ def init(file_path: str) -> None:
         typer.echo("File already exists!")
     else:
         data = check_file_and_read_file(file_path)
-
-    write_json(data)
+        write_json(data)
 
 
 @app.command()
