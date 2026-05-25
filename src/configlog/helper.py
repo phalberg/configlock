@@ -82,17 +82,14 @@ def check_file_and_read_file(file_path: str) -> dict:
 
 def check_compatibility(new_file_path: str) -> None:
     """"
+    
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
     Values => must be of the same types
     What about adding New entries? -> Fine
     Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
     """
 
-    # implement some DFS algorithm to run this.
-
-    current_file_path = CONFIG_LOG_FILE_PATH
-
-    
+    current_file_path = CONFIG_LOG_FILE_PATH    
 
     current_data = read_json(current_file_path)
     new_data = check_file_and_read_file(new_file_path)
