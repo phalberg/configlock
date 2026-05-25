@@ -13,9 +13,9 @@ keys_to_ignore = {"version"}
 
 def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     path = Path(file_path)
-    exists = False
-    if not path.exists():
-        typer.echo(f"The path does not exist: {path}", err=True)
+    exists = path.exists()
+    if not exists:
+        typer.echo(f"The path does not exist: {path}")
     return exists
 
 
