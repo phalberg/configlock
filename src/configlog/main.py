@@ -25,7 +25,7 @@ def init(file_path: Annotated[str, typer.Argument(help="the path for the newly p
 @app.command()
 def sync(
     file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")],
-    order_matters: bool = typer.Option(False, "--order-matters/--no-order-matters"),
+    order_matters: bool = typer.Option(False, "--order-matters/--no-order-matters", help="choose if the order of the keys matter or not"),
 ):
     """
     Used to sync the lock file if compatible
