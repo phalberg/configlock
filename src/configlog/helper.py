@@ -152,6 +152,6 @@ def accept_new_value(current_value, new_value) -> None:
     """
 
     if type(current_value) != type(new_value):
-            typer.echo(f"The type of a value has changed from {type(current_value)} to {type(new_value)}", err=True)
+            typer.echo(f"The type of a value has changed from {type(current_value).__name__} to {type(new_value).__name__}", err=True)
             raise ValueError(f"New proposed file does not match value type of lock file in {CONFIG_LOG_FILE_PATH}")
 

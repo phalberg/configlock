@@ -19,7 +19,7 @@ def runner_setup():
 def runner_with_lock_file_setup():
     with runner.isolated_filesystem():        
         with open("config.lock.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example", "value": 42}, f)
+            json.dump({"name": "example"}, f)
         yield runner
 
 def test_not_available_lock_file(runner_setup):
@@ -45,11 +45,23 @@ def test_fail_new_key(runner_with_lock_file_setup):
     
     
     with open("new_file.yaml", "w", encoding="utf-8") as f:
-        f.write("name: demo\nenabled: true\n")
+        f.write("first_name: example")
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
+        
+    assert result.exit_code == 1
+    assert isinstance(result.exception, ValueError)
+    assert "does not match keys of lock file" in str(result.exception).lower()
     
-    output_debbuging(result)
+def test_fail_new_value(runner_with_lock_file_setup):
+    
+    with open("new_file.yaml", "w", encoding="utf-8") as f:
+        f.write("name: 12")
+    result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
 
-def test_fail_new_value():
-    pass
+    assert result.exit_code == 1
+    assert isinstance(result.exception, ValueError)
+    assert "does not match value type of lock file" in str(result.exception).lower() 
+
+    
+    
 
