@@ -28,8 +28,7 @@ def sync(file_path: str):
     Used to sync the lock file if compatible
     """
     
-
-    if check_file_and_read_file:
+    if check_file_identicality(file_path):
         typer.echo("The file has not changed.", err=True)
     else:  
         check_compatibility(file_path)
