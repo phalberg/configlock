@@ -87,7 +87,7 @@ def check_file_and_read_file(file_path: str) -> dict:
 
 
 
-def check_compatibility(new_file_path: str, order_matters: bool | False) -> None:
+def check_compatibility(new_file_path: str, order_matters: bool | None = False) -> None:
     """"
     
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
@@ -102,14 +102,14 @@ def check_compatibility(new_file_path: str, order_matters: bool | False) -> None
     new_data = check_file_and_read_file(new_file_path)
 
     if order_matters:
-        walk_yaml_stricht(current_data, new_data)
+        walk_yaml_in_order(current_data, new_data)
     else:
-        walk_yaml
+        walk_yaml_with_no_order(current_data, new_data)
 
 
 
-def walk_yaml(current_data, new_data, depth=0):
-    """Recursively walks through a YAML-loaded object."""
+def walk_yaml_with_no_order(current_data, new_data, depth=0):
+    """Recursively walks through a YAML-loaded object with no order."""
     # Indentation for visual clarity during printing
     indent = "  " * depth
 
@@ -129,7 +129,7 @@ def walk_yaml(current_data, new_data, depth=0):
             new_v = new_data[curr_k]
 
             print(f"{indent}New key: {curr_k}, old key: {curr_k}, {type(curr_k)}")
-            walk_yaml(curr_v, new_v, depth + 1)
+            walk_yaml_with_no_order(curr_v, new_v, depth + 1)
             
  #   elif isinstance(current_data, list):
  #       for index, item in enumerate(current_data):
@@ -141,8 +141,8 @@ def walk_yaml(current_data, new_data, depth=0):
         print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
 
 
-def walk_yaml_stricht(current_data, new_data, depth=0):
-    """Recursively walks through a YAML-loaded object."""
+def walk_yaml_in_order(current_data, new_data, depth=0):
+    """Recursively walks through a YAML-loaded object in order."""
     # Indentation for visual clarity during printing
     indent = "  " * depth
 
@@ -160,7 +160,7 @@ def walk_yaml_stricht(current_data, new_data, depth=0):
 
 
             print(f"{indent}New key: {new_k}, old key: {curr_k}, {type(curr_k)}")
-            walk_yaml(new_v, curr_v , depth + 1)
+            walk_yaml_with_no_order(new_v, curr_v , depth + 1)
             
  #   elif isinstance(current_data, list):
  #       for index, item in enumerate(current_data):
