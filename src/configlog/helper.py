@@ -2,6 +2,8 @@ import typer
 import yaml
 import json
 from pathlib import Path
+import filemcp
+
 
 from itertools import zip_longest
 
@@ -10,6 +12,14 @@ CONFIG_LOG_FILE_PATH = "config.lock.json"
 keys_to_ignore = {"version"}
 
 
+
+def check_file_identicality(file_path:str, config_file_path: str | None = CONFIG_LOG_FILE_PATH):
+    
+    filemcp.clear_cache()
+    are_files_identical = filecmp.cmp(file_path, config_file_path, shallow=False)
+    return are_files_identical
+    
+    
 
 def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     path = Path(file_path)

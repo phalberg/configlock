@@ -1,6 +1,6 @@
 import typer
 
-from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file
+from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file, check_file_identicality
 
 
 app = typer.Typer()
@@ -27,14 +27,14 @@ def sync(file_path: str):
     """
     Used to sync the lock file if compatible
     """
+    
 
-    # make sure init has been ran
-    #init(file_path)
-    # assume the old file already exists:
-
-    check_compatibility(file_path)
-    data = check_file_and_read_file(file_path)
-    write_json(data)
+    if check_file_and_read_file:
+        typer.echo("The file has not changed.", err=True)
+    else:  
+        check_compatibility(file_path)
+        data = check_file_and_read_file(file_path)
+        write_json(data)
 
 
 
