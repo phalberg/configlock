@@ -1,6 +1,7 @@
 import typer
 
-from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file, check_file_identicality
+from .helper import  write_json, check_file_exists, check_file_identicality
+from .validator import check_compatibility, check_file_and_read_file
 from typing import Annotated
 
 app = typer.Typer()
