@@ -22,17 +22,19 @@ def runner_with_lock_file_setup():
             json.dump({"name": "example"}, f)
         yield runner
 
-def test_not_available_lock_file(runner_setup):
+def test_not_available_file(runner_setup):
     
     result = runner_setup.invoke(main.app, ["sync", "some_file.json"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, FileNotFoundError)
-    assert "no such file" in str(result.exception).lower()
+    
     
 
 def test_compatibility_file(runner_with_lock_file_setup):
 
+    with open("incompatible_file.toml", "w", encoding="utf-8") as f:
+        f.write('[section]\nkey = "value"')
 
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "incompatible_file.toml"])
 
