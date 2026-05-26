@@ -6,6 +6,10 @@ from .helper import  write_json, check_file_exists, check_compatibility, check_f
 app = typer.Typer()
 
 
+def main() -> None:
+    app()
+
+
 @app.command()
 def init(file_path: str) -> None:
     """
@@ -37,7 +41,7 @@ def sync(file_path: str):
 
     
 if __name__ == "__main__":
-    app()
+    main()
 
 
 
