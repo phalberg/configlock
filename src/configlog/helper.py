@@ -1,3 +1,5 @@
+from itertools import zip_longest
+
 import typer
 import yaml
 import json

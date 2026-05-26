@@ -1,7 +1,7 @@
 import typer
 
 from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file, check_file_identicality
-
+from typing import Annotated
 
 app = typer.Typer()
 
@@ -11,7 +11,7 @@ def main() -> None:
 
 
 @app.command()
-def init(file_path: str) -> None:
+def init(file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")]) -> None:
     """
     Reads a YAML config and generates a lockfile.
     """
@@ -24,7 +24,7 @@ def init(file_path: str) -> None:
 
 @app.command()
 def sync(
-    file_path: str,
+    file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")],
     order_matters: bool = typer.Option(False, "--order-matters/--no-order-matters"),
 ):
     """
@@ -37,8 +37,6 @@ def sync(
         check_compatibility(file_path, order_matters)
         data = check_file_and_read_file(file_path)
         write_json(data)
-
-
 
 
     
