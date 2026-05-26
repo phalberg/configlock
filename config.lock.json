@@ -19,5 +19,11 @@
     "new_flag": {
         "as_a_test": true
     },
+    "new_test_data": {
+        "wrong": false
+    },
+    "okay": {
+        "testing": true
+    },
     "version": 1
 }

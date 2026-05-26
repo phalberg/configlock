@@ -5,9 +5,6 @@ from pathlib import Path
 import filecmp
 
 
-from itertools import zip_longest
-
-
 CONFIG_LOG_FILE_PATH = "config.lock.json"
 keys_to_ignore = {"version"}
 
@@ -90,7 +87,7 @@ def check_file_and_read_file(file_path: str) -> dict:
 
 
 
-def check_compatibility(new_file_path: str) -> None:
+def check_compatibility(new_file_path: str, order_matters: bool | False) -> None:
     """"
     
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
@@ -104,12 +101,47 @@ def check_compatibility(new_file_path: str) -> None:
     current_data = read_json(current_file_path)
     new_data = check_file_and_read_file(new_file_path)
 
-
-    walk_yaml(current_data, new_data)
+    if order_matters:
+        walk_yaml_stricht(current_data, new_data)
+    else:
+        walk_yaml
 
 
 
 def walk_yaml(current_data, new_data, depth=0):
+    """Recursively walks through a YAML-loaded object."""
+    # Indentation for visual clarity during printing
+    indent = "  " * depth
+
+    if isinstance(current_data, dict):
+        if not isinstance(new_data, dict):
+            accept_new_value(current_value=current_data, new_value=new_data)
+            return
+
+        for curr_k, curr_v in current_data.items():
+            # specific values for our own interpretation of versionings etc.
+            if curr_k in keys_to_ignore:
+                continue
+
+            if curr_k not in new_data:
+                accept_new_keys(curr_k, None)
+
+            new_v = new_data[curr_k]
+
+            print(f"{indent}New key: {curr_k}, old key: {curr_k}, {type(curr_k)}")
+            walk_yaml(curr_v, new_v, depth + 1)
+            
+ #   elif isinstance(current_data, list):
+ #       for index, item in enumerate(current_data):
+ #           print(f"{indent}Index {index}:")
+ #           walk_yaml(item, depth + 1)
+            
+    else:
+        accept_new_value(current_value=current_data, new_value=new_data)
+        print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
+
+
+def walk_yaml_stricht(current_data, new_data, depth=0):
     """Recursively walks through a YAML-loaded object."""
     # Indentation for visual clarity during printing
     indent = "  " * depth
@@ -138,6 +170,7 @@ def walk_yaml(current_data, new_data, depth=0):
     else:
         accept_new_value(current_value=current_data, new_value=new_data)
         print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
+
 
 
 

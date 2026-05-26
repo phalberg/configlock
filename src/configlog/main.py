@@ -1,5 +1,5 @@
 import typer
-
+from typing import Annotated
 from .helper import  write_json, check_file_exists, check_compatibility, check_file_and_read_file, check_file_identicality
 
 
@@ -23,7 +23,11 @@ def init(file_path: str) -> None:
 
 
 @app.command()
-def sync(file_path: str):
+def sync(file_path: str,
+        order_matters: Annotated[
+        bool | None, typer.Option("--order_matters", callback=order_matters)
+        ] = False,
+        ):
     """
     Used to sync the lock file if compatible
     """
