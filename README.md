@@ -53,3 +53,25 @@ Phase 4: Polish & Open-Source Readiness - Weeks 10-12
     [ ] Add automated warning systems (e.g., "Warning: Changing this key type from int to string might break code").
 
     [ ] Create clean, comprehensive setup documentation (README.md) so other developers can install your tool via pip and use it on their repos.
+
+## CLI Usage
+
+Install the project in editable mode while developing:
+
+```bash
+pip install -e .
+```
+
+Run the command directly after install:
+
+```bash
+configlog --help
+configlog init tests/test_files/config.yaml
+configlog sync tests/test_files/config.yaml
+```
+
+You can also run the package module directly:
+
+```bash
+python -m configlog init tests/test_files/config.yaml
+```
