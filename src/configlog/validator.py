@@ -83,7 +83,7 @@ def walk_yaml_in_order(current_data, new_data, depth=0):
             if curr_k in keys_to_ignore:
                 continue
         
-            accept_new_keys(curr_k, new_k)
+            accept_new_keys(current_key=curr_k,new_key=new_k, order_matters=True)
 
 
             print(f"{indent}New key: {new_k}, old key: {curr_k}, {type(curr_k)}")
@@ -101,7 +101,7 @@ def walk_yaml_in_order(current_data, new_data, depth=0):
 
 
 
-def accept_new_keys(current_key: str, new_key: str) -> None:
+def accept_new_keys(current_key: str, new_key: str, order_matters: bool | None = False) -> None:
     """
     General logic for accepting new keys:
     1) the name of new_key cannot be different than the name of current_key
@@ -109,9 +109,14 @@ def accept_new_keys(current_key: str, new_key: str) -> None:
     3) the precedence (i.e indentation) cannot be different than the current_key
     """
 
+
     if current_key != new_key:
-            typer.echo(f"A key is missing or changed from {current_key} to {new_key}", err=True)
-            raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
+            if order_matters:
+                typer.echo(f"A key is missing or changed from {current_key} to {new_key}", err=True)
+                raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}, make sure to check ordering!")
+            else:
+                typer.echo(f"A key is missing or changed from {current_key} to {new_key}", err=True)
+                raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}, make sure to check ordering!")
     
 
 

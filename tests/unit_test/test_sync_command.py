@@ -19,7 +19,7 @@ def runner_setup():
 def runner_with_lock_file_setup():
     with runner.isolated_filesystem():        
         with open("config.lock.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example"}, f)
+            json.dump({"name": "example", "object": False}, f)
         yield runner
 
 def test_not_available_file(runner_setup):
@@ -66,4 +66,26 @@ def test_fail_new_value(runner_with_lock_file_setup):
 
     
     
+def test_order_matters_works(runner_with_lock_file_setup):
+    
+    with open("new_file.yaml", "w", encoding="utf-8") as f:
+        f.write("object: false")
+    
+    result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml", "--order-matters"])
+    
+    assert result.exit_code == 1
+    assert isinstance(result.exception, ValueError)
+    assert "does not match keys" in str(result.exception).lower()
+    assert "check ordering" in str(result.exception).lower()
+
+def test_no_order_matters_works_correctly(runner_with_lock_file_setup):
+    
+    with open("new_file.yaml", "w", encoding="utf-8") as f:
+        f.write("object: false\nname: example")
+    
+    result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
+    
+    
+    assert result.exit_code == 0
+    assert result.exception == None
 
