@@ -116,7 +116,7 @@ def accept_new_keys(current_key: str, new_key: str, order_matters: bool | None =
                 raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}, make sure to check ordering!")
             else:
                 typer.echo(f"A key is missing or changed from {current_key} to {new_key}", err=True)
-                raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}, make sure to check ordering!")
+                raise ValueError(f"New proposed file does not match keys of lock file in {CONFIG_LOG_FILE_PATH}")
     
 
 

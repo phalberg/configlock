@@ -25,5 +25,8 @@
     "okay": {
         "testing": true
     },
+    "testing": {
+        "more_testing": true
+    },
     "version": 1
 }

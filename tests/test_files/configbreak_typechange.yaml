@@ -11,16 +11,4 @@ ai_prompts:
 
 feature_flags:
   enable_new_ui: true
-  beta_users_only: false
-
-some_flags:
-  nothing: false
-
-new_flag:
-  as_a_test: true
-new_test_data:
-  wrong: false
-okay:
-  testing: true
-testing:
-  more_testing: true
+  beta_users_only: "false"
