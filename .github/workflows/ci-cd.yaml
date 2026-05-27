@@ -23,7 +23,7 @@ jobs:
           python-version: "3.13"
 
       - name: tests
-        run: uv run pytest -v --durations=0 --cov --cov-report=xml
+        run: uv run pytest
 
       - name: Show configlog CLI help with `uv`
         run: uv run configlog --help
