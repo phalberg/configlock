@@ -22,8 +22,16 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: install configlock for uv
+        run: pip install -e .
+
       - name: tests
         run: uv run pytest
 
       - name: Show configlog CLI help with `uv`
-        run: uv run configlog --help
+        run: configlog --help
+
+      - name: initialize the file first using configlog
+        run: configlog init project_info.yaml
+      - name: sync the file if already initialized
+        run: configlog sync project_info.yaml --order-matters
