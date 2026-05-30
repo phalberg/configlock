@@ -1,7 +1,7 @@
 # ConfigLock
 ConfigLock is a lightweight CLI tool designed to prevent production outages by configuration errors. It brings the concept of Lockfiles (inspiration from uv) to your application’s .yaml or .json configurations.
 
-![CI Status](https://github.com/phalberg/congfiglog/actions/workflows/ci-cd.yaml/badge.svg)
+![CI Status](https://github.com/phalberg/configlock/actions/workflows/ci-cd.yaml/badge.svg)
 
 ![Python Version](https://img.shields.io/badge/python-3.13-blue.svg)
 
