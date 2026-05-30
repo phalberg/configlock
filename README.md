@@ -43,13 +43,17 @@ configlock sync {path_to_your_file}
 ```
 
 # Status
-The project is in a prototype stage, that means bugs, fixes and issues will persist along the way. Some key features that will be explored include:
-- [x] Basic CLI integration
-- [x] GitHub actions integration
-- [ ] GitHub API integration
-- [ ] Frontend usage of the application (somehow...)
-- [ ] Type checking (perhaps)
+ConfigLock is a **personal hobby project** focused on learning robust CLI development and structural validation logic. 
 
+> [!NOTE]
+> This project is in an early prototype stage. It is a learning exercise in building developer tools with Python and Typer.
+
+### Roadmap
+- [x] Basic CLI integration with Typer
+- [x] GitHub Actions CI/CD pipeline
+- [x] Recursive Type & Structure checking
+- [ ] GitHub API integration (Fetch remote configs)
+- [ ] Web-based UI for configuration visualization
 
 # The problem
 In modern DevOps, non-technical team members often need to edit configuration files (YAML/JSON). One missing key or a wrong data type (e.g., entering a string where a boolean is expected) may crash a production environment.
