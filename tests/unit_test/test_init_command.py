@@ -1,5 +1,5 @@
 from typer.testing import CliRunner
-from configlog import main
+from configlock import main
 import pytest
 import json
 

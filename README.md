@@ -65,13 +65,13 @@ pip install -e .
 Run the command directly after install:
 
 ```bash
-configlog --help
-configlog init tests/test_files/config.yaml
-configlog sync tests/test_files/config.yaml
+configlock --help
+configlock init tests/test_files/config.yaml
+configlock sync tests/test_files/config.yaml
 ```
 
 You can also run the package module directly:
 
 ```bash
-python -m configlog init tests/test_files/config.yaml
+python -m configlock init tests/test_files/config.yaml
 ```

@@ -1,0 +1,9 @@
+{
+    "project_name": "ConfigLock",
+    "status": "Alpha",
+    "version": 1,
+    "team": {
+        "lead": "Philipp Stahlberg",
+        "contributors": []
+    }
+}

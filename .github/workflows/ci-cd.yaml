@@ -28,10 +28,10 @@ jobs:
       - name: tests
         run: uv run pytest
 
-      - name: Show configlog CLI help with `uv`
-        run: configlog --help
+      - name: Show configlock CLI help with `uv`
+        run: configlock --help
 
-      - name: initialize the file first using configlog
-        run: configlog init project_info.yaml
+      - name: initialize the file first using configlock
+        run: configlock init project_info.yaml
       - name: sync the file if already initialized
-        run: configlog sync project_info.yaml --order-matters
+        run: configlock sync project_info.yaml --order-matters

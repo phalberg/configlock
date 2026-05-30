@@ -1,5 +1,5 @@
 [project]
-name = "configlog"
+name = "configlock"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-configlog = "configlog.main:main"
+configlock = "configlock.main:main"
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12.0"]

@@ -1,7 +1,7 @@
 from typer.testing import CliRunner
 import json
 
-from configlog import main
+from configlock import main
 
 
 runner = CliRunner()
