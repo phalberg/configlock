@@ -54,10 +54,8 @@ def test_fail_new_key(runner_with_lock_file_setup):
         
     assert result.exit_code == 1
     assert isinstance(result.exception, ValidationError)
-    
-    
-    output_debbuging(result)
-    #assert "does not match keys of lock file" in str(result.exception).lower()
+    exc_str = str(result.exception).lower()
+    assert all(s in exc_str for s in ["in path", "expected", "found", "error code"])    
     
 def test_fail_new_value(runner_with_lock_file_setup):
     

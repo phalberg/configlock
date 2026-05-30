@@ -19,10 +19,14 @@ class ValidationError(ConfigLockError):
         self.order_matters = order_matters
 
     def __str__(self):
-        base_msg = f"In {self.path} it was found: {self.actual_value} but the expected was: {self.expected_value}."
+        base_msg = f""" 
+        In path: {self.path} 
+        Expected: {self.expected_value}
+        Found: {self.actual_value}
+        """
         if self.order_matters:
             base_msg += " (key order matters)"
-        return f"{base_msg} (Error Code: {self.error_code})"
+        return f"{base_msg}(Error Code: {self.error_code})"
 
     
 
