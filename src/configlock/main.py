@@ -1,5 +1,7 @@
 import typer
 
+from configlock.exceptions import ConfigLockError
+
 from .helper import  write_json, check_file_exists, check_file_identicality
 from .validator import check_compatibility, check_file_and_read_file
 from typing import Annotated
@@ -26,11 +28,23 @@ def init(file_path: Annotated[str, typer.Argument(help="the path for the newly p
 @app.command()
 def sync(
     file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")],
-    order_matters: bool = typer.Option(False, "--order-matters/--no-order-matters", help="choose if the order of the keys matter or not"),
 ):
     """
     Used to sync the lock file if compatible
     """
+    if check_file_identicality(file_path):
+        typer.echo("The file has not changed.", err=True)
+    else:
+        # error!
+        raise ConfigLockError("The lock file is updated, run sync to update the lock file!", error_code=1)
+
+
+@app.command()
+def lock(
+    file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")],
+    order_matters: bool = typer.Option(False, "--order-matters/--no-order-matters", help="choose if the order of the keys matter or not"),
+    ):
+    
     
     if check_file_identicality(file_path):
         typer.echo("The file has not changed.", err=True)

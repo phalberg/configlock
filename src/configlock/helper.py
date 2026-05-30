@@ -12,6 +12,7 @@ CONFIG_LOG_FILE_PATH = os.getenv('CONFIG_LOG_FILE_PATH', 'config.lock.json')
 
 
 def check_file_identicality(file_path:str, config_file_path: str | None = CONFIG_LOG_FILE_PATH):
+    """Checks if files are identical, if they are it returns True, False otherwise"""
     
     filecmp.clear_cache()
     are_files_identical = filecmp.cmp(file_path, config_file_path, shallow=False)
