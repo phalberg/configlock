@@ -1,0 +1,35 @@
+
+class ConfigLockError(Exception):
+    """Basic Error"""
+
+    def __init__(self, message, error_code=1):
+        super().__init__(message)
+        self.message = message
+        self.error_code = error_code
+
+
+class ValidationError(ConfigLockError):
+    """Error for validation for syncing file"""
+
+    def __init__(self, path, expected_value, actual_value, message="Validation Failed", order_matters=False):
+        super().__init__(message, error_code=100)
+        self.path = path    
+        self.expected_value = expected_value
+        self.actual_value = actual_value
+        self.order_matters = order_matters
+
+    def __str__(self):
+        base_msg = f""" 
+        In path: {self.path} 
+        Expected: {self.expected_value}
+        Found: {self.actual_value}
+        """
+        if self.order_matters:
+            base_msg += "Additional: remember that order matters for keys!"
+        return f"{base_msg}\n(Error Code: {self.error_code})"
+
+    
+
+    
+    
+    

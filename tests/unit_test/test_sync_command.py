@@ -3,12 +3,14 @@ from configlock import main
 import pytest
 import json
 
+from configlock.exceptions import ValidationError
+
 runner = CliRunner()
 
 def output_debbuging(result):
-    print(result.output)
+   # print(result.output)
     print(result.exception)
-    print(result.exc_info)
+   # print(result.exc_info)
 
 @pytest.fixture
 def runner_setup():
@@ -51,8 +53,9 @@ def test_fail_new_key(runner_with_lock_file_setup):
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
         
     assert result.exit_code == 1
-    assert isinstance(result.exception, ValueError)
-    assert "does not match keys of lock file" in str(result.exception).lower()
+    assert isinstance(result.exception, ValidationError)
+    exc_str = str(result.exception).lower()
+    assert all(s in exc_str for s in ["in path", "expected", "found", "error code"])    
     
 def test_fail_new_value(runner_with_lock_file_setup):
     
@@ -61,9 +64,9 @@ def test_fail_new_value(runner_with_lock_file_setup):
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
 
     assert result.exit_code == 1
-    assert isinstance(result.exception, ValueError)
-    assert "does not match value type of lock file" in str(result.exception).lower() 
-
+    assert isinstance(result.exception, ValidationError)
+    exec_str = str(result.exception).lower()
+    assert all(s in exec_str for s in ["in path", "<str>", "<int>", "example", "12", "found", "expected", "error code"])
     
     
 def test_order_matters_works(runner_with_lock_file_setup):
@@ -74,11 +77,11 @@ def test_order_matters_works(runner_with_lock_file_setup):
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml", "--order-matters"])
     
     assert result.exit_code == 1
-    assert isinstance(result.exception, ValueError)
-    assert "does not match keys" in str(result.exception).lower()
-    assert "check ordering" in str(result.exception).lower()
-
-def test_no_order_matters_works_correctly(runner_with_lock_file_setup):
+    assert isinstance(result.exception, ValidationError)
+    exc_str = str(result.exception).lower()
+    assert all(s in exc_str for s in ["in path", "expected", "found", "error code", "additional", "order"])    
+    
+def test_no_order_matters_works(runner_with_lock_file_setup):
     
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("object: false\nname: example")
