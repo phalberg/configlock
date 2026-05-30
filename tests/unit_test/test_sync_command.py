@@ -64,9 +64,9 @@ def test_fail_new_value(runner_with_lock_file_setup):
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "new_file.yaml"])
 
     assert result.exit_code == 1
-    assert isinstance(result.exception, ValueError)
-    assert "does not match value type of lock file" in str(result.exception).lower() 
-
+    assert isinstance(result.exception, ValidationError)
+    exec_str = str(result.exception).lower()
+    assert all(s in exec_str for s in ["in path", "<str>", "<int>", "example", "12", "found", "expected", "error code"])
     
     
 def test_order_matters_works(runner_with_lock_file_setup):
