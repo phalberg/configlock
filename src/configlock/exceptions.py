@@ -25,8 +25,8 @@ class ValidationError(ConfigLockError):
         Found: {self.actual_value}
         """
         if self.order_matters:
-            base_msg += " (key order matters)"
-        return f"{base_msg}(Error Code: {self.error_code})"
+            base_msg += "Additional: remember that order matters for keys!"
+        return f"{base_msg}\n(Error Code: {self.error_code})"
 
     
 

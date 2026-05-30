@@ -78,10 +78,10 @@ def test_order_matters_works(runner_with_lock_file_setup):
     
     assert result.exit_code == 1
     assert isinstance(result.exception, ValidationError)
-    assert "does not match keys" in str(result.exception).lower()
-    assert "check ordering" in str(result.exception).lower()
-
-def test_no_order_matters_works_correctly(runner_with_lock_file_setup):
+    exc_str = str(result.exception).lower()
+    assert all(s in exc_str for s in ["in path", "expected", "found", "error code", "additional", "order"])    
+    
+def test_no_order_matters_works(runner_with_lock_file_setup):
     
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("object: false\nname: example")
