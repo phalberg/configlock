@@ -60,7 +60,7 @@ In modern DevOps, non-technical team members often need to edit configuration fi
 
 # Init 
 `init: Analyzes your YAML/JSON and creates a config.lock.json that stores the required structure and types.`
-_Note: it will (should) only make one lock file per file path you give it._
+_Note: ConfigLock generates one unique lockfile corresponding to the file path provided._
 
 # Sync
 
