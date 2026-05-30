@@ -54,8 +54,6 @@ def check_compatibility(new_file_path: str, order_matters: bool | None = False) 
 
 def walk_yaml_with_no_order(current_data, new_data, context: ValidationContext, depth=0):
     """Recursively walks through a YAML-loaded object with no order."""
-    # Indentation for visual clarity during printing
-    indent = "  " * depth
 
     if isinstance(current_data, dict):
         if not isinstance(new_data, dict):
@@ -72,18 +70,14 @@ def walk_yaml_with_no_order(current_data, new_data, context: ValidationContext, 
 
             new_v = new_data[curr_k]
 
-            print(f"{indent}New key: {curr_k}, old key: {curr_k}, {type(curr_k)}")
             walk_yaml_with_no_order(curr_v, new_v, context, depth + 1)
             
     else:
         accept_new_value(current_value=current_data, new_value=new_data, context=context)
-        print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
 
 
 def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth=0):
     """Recursively walks through a YAML-loaded object in order."""
-    # Indentation for visual clarity during printing
-    indent = "  " * depth
 
     if isinstance(current_data, dict):
         for new_pair, curr_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
@@ -96,12 +90,10 @@ def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth
         
             accept_new_keys(current_key=curr_k, new_key=new_k, context=context)
 
-            print(f"{indent}New key: {new_k}, old key: {curr_k}, {type(curr_k)}")
             walk_yaml_with_no_order(new_v, curr_v, context, depth + 1)
             
     else:
         accept_new_value(current_value=current_data, new_value=new_data, context=context)
-        print(f"{indent}Value_old: {current_data}, and new_value: {new_data} its type_old {type(current_data)})")
 
 
 
@@ -137,7 +129,17 @@ def accept_new_value(current_value, new_value, context: ValidationContext) -> No
     General logic for accepting new values:
     1) the type of the new_value cannot be different than the type of the current_value
     """
+    type_curr = type(current_value)
+    type_new = type(new_value)
+    
+    if type_curr != type_new:
+        
+            type_curr_val = f"<{type_curr.__name__}> with value: {current_value}"
+            type_next_val = f"<{type_new.__name__}> with value: {new_value}"
 
-    if type(current_value) != type(new_value):
-            typer.echo(f"The type of a value has changed from {type(current_value).__name__} to {type(new_value).__name__}", err=True)
-            raise ValueError(f"New proposed file does not match value type of lock file in {CONFIG_LOG_FILE_PATH}")
+            raise ValidationError(
+                path = context.new_path,
+                expected_value=type_curr_val,
+                actual_value=type_next_val
+            )
+        
