@@ -1,28 +1,7 @@
-from typer.testing import CliRunner
 from configlock import main
-import pytest
 import json
 
 from configlock.exceptions import ValidationError
-
-runner = CliRunner()
-
-def output_debbuging(result):
-   # print(result.output)
-    print(result.exception)
-   # print(result.exc_info)
-
-@pytest.fixture
-def runner_setup():
-    with runner.isolated_filesystem():
-        yield runner
-        
-@pytest.fixture
-def runner_with_lock_file_setup():
-    with runner.isolated_filesystem():        
-        with open("config.lock.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example", "object": False}, f)
-        yield runner
 
 def test_not_available_file(runner_setup):
     

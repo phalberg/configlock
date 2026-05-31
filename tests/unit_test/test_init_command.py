@@ -1,22 +1,5 @@
-from typer.testing import CliRunner
 from configlock import main
-import pytest
 import json
-
-runner = CliRunner()
-
-
-@pytest.fixture
-def runner_setup():
-    with runner.isolated_filesystem():
-        yield runner
-        
-@pytest.fixture
-def runner_with_lock_file_setup():
-    with runner.isolated_filesystem():        
-        with open("config.lock.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example", "value": 42}, f)
-        yield runner
 
 
 def test_init_valueerror_path_error(runner_setup):
