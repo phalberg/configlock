@@ -32,7 +32,6 @@ def sync(
     """
     Used to check if lock file and proposed file are out of sync
     """
-
     if check_file_identicality(file_path):
         typer.echo("The file has not changed.", err=True)
     else:
@@ -48,13 +47,9 @@ def lock(
     Used to update the lock file, IF compatible
     """
     
-    
-    if check_file_identicality(file_path):
-        typer.echo("The file has not changed.", err=True)
-    else:  
-        check_compatibility(file_path, order_matters)
-        data = check_file_and_read_file(file_path)
-        write_json(data)
+    check_compatibility(file_path, order_matters)
+    data = check_file_and_read_file(file_path)
+    write_json(data)
 
 
     
