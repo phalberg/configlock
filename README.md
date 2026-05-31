@@ -11,7 +11,7 @@ ConfigLock is a lightweight CLI tool designed to prevent production outages by c
 
 ```
 # Clone the repo
-git clone https://github.com/phalberg/configlock.git
+git clone https://github.com/phalberg/configlock
 cd configlock
 
 # Install dependencies
@@ -20,7 +20,7 @@ uv sync
 # Initialize a lockfile
 uv run configlock init my_config.yaml
 
-# Sync/Validate changes
+# Sync after changes
 uv run configlock sync my_config.yaml
 ```
 
@@ -39,6 +39,7 @@ Run the command directly after install:
 ```bash
 configlock --help
 configlock init {path_to_your_file}
+configlock lock {path_to_your_file}
 configlock sync {path_to_your_file}
 ```
 
@@ -59,18 +60,31 @@ ConfigLock is a **personal hobby project** focused on learning robust CLI develo
 In modern DevOps, non-technical team members often need to edit configuration files (YAML/JSON). One missing key or a wrong data type (e.g., entering a string where a boolean is expected) may crash a production environment.
 
 # Init 
-`init: Analyzes your YAML/JSON and creates a config.lock.json that stores the required structure and types.`
+```bash
+init: Analyzes your YAML/JSON and creates a config.lock.json that stores the required structure and types.
+```
 _Note: ConfigLock generates one unique lockfile corresponding to the file path provided._
 
 # Sync
 
-`sync: Compares your current YAML/JSON against the lockfile. If a key is missing or a type has changed, you get an error`
+```bash
+sync: Compares your current YAML/JSON against the lockfile. If a key is missing or a type has changed, you get an error.
+```
 
-## Sync with strict ordering
+# Lock
+```bash
+lock: Checks your current YAML/JSON and tries to replace the locked file with the new changed current file, if the change is not compatible, you get an error.
+
+```
+## Lock with strict ordering
 Please use the command:
-`configlock sync {path_to_your_file} --order-matters`
+```bash
+configlock lock {path_to_your_file} --order-matters
+```
 If the order of the keys matter, if not the default:
-`configlock sync {path_to_your_file} --no-order-matters` 
+```bash
+configlock lock {path_to_your_file} --no-order-matters
+``` 
 will be set.
 
 # License
