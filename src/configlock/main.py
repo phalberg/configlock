@@ -35,7 +35,7 @@ def sync(
     if check_file_identicality(file_path):
         typer.echo("The file has not changed.", err=True)
     else:
-        raise ConfigLockError("The lock file is updated, run sync to update the lock file!", error_code=1)
+        raise ConfigLockError("The lock file is outdated, run sync to update the lock file!", error_code=1)
 
 
 @app.command()

@@ -5,6 +5,7 @@ import json
 
 def output_debbuging(result):
     print(result.exception)
+    print(result.exit_code)
 
 
 @pytest.fixture
