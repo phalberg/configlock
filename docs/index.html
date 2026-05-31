@@ -16,6 +16,7 @@
     <input type="text" id="branch" placeholder="branch (e.g main)">
     <input type="text" id="path" placeholder="path/to/config.yaml">
     <button onclick="fetchFile()">Fetch Config</button>
+    <div id="url" style="margin-bottom: 10px; color: #666;"></div>
 
     <h3>Result:</h3>
     <div id="output">No data yet...</div>
@@ -24,21 +25,21 @@
         async function fetchFile() {
             const user = document.getElementById('user').value;
             const repo = document.getElementById('repo').value;
-            const branch = document.getElementById('branch').value
+            const branch = document.getElementById('branch').value;
             const path = document.getElementById('path').value;
             const output = document.getElementById('output');
+            const urlBox = document.getElementById('url');
 
             output.innerText = "Fetching...";
+            const url = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
+            urlBox.innerText = url;
 
             try {
-                const response = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`);
+                const response = await fetch(url);
 
                 if (!response.ok) throw new Error(`GitHub error: ${response.status}`);
-
-                const data = await response.json();
-                // Decode Base64 (using atob) and display
-                //const content = atob(data.content.replace(/\n/g, ''));
-                output.innerText = data;
+                const content = await response.text();
+                output.innerText = content;
             } catch (err) {
                 output.innerText = "Error: " + err.message;
             }

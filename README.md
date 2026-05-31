@@ -43,6 +43,12 @@ configlock lock {path_to_your_file}
 configlock sync {path_to_your_file}
 ```
 
+Preview the docs locally with hot reload:
+
+```bash
+uv run docs-serve
+```
+
 # Status
 ConfigLock is a **personal hobby project** focused on learning robust CLI development and structural validation logic. 
 
