@@ -33,7 +33,7 @@ def sync(
     Used to check if lock file and proposed file are out of sync
     """
     if check_file_identicality(file_path):
-        typer.echo("The file has not changed.", err=True)
+        typer.echo("The file has not changed.")
     else:
         raise ConfigLockError("The lock file is outdated, run sync to update the lock file!", error_code=1)
 
