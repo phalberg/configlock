@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from itertools import zip_longest
 
-import typer
 
 
 from .helper import check_file_and_read_file, read_json
