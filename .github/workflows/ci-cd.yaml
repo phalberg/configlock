@@ -33,5 +33,5 @@ jobs:
 
       - name: initialize the file first using configlock
         run: configlock init project_info.yaml
-      - name: sync the file if already initialized
-        run: configlock sync project_info.yaml --order-matters
+      - name: check locked file
+        run: configlock lock project_info.yaml
