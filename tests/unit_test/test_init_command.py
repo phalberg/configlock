@@ -1,5 +1,4 @@
 from configlock import main
-import json
 
 
 def test_init_valueerror_path_error(runner_setup):

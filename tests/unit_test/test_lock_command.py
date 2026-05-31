@@ -1,5 +1,4 @@
 from configlock import main
-import json
 
 from configlock.exceptions import ValidationError
 
