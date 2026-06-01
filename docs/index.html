@@ -40,6 +40,11 @@
                 if (!response.ok) throw new Error(`GitHub error: ${response.status}`);
                 const content = await response.text();
                 output.innerText = content;
+
+                output.contentEditable = "true";
+    
+                output.focus();
+
             } catch (err) {
                 output.innerText = "Error: " + err.message;
             }
