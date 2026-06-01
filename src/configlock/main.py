@@ -14,14 +14,14 @@ def main() -> None:
 
 
 @app.command()
-def init(file_path: Annotated[str, typer.Argument(help="the path for the newly proposed file")]) -> None:
+def init(file: Annotated[dict, typer.Argument(help="the path for the newly proposed file")]) -> None:
     """
     Reads a YAML config and generates a lockfile.
     """
     if check_file_exists():
         typer.echo("File already exists!")
     else:
-        data = check_file_and_read_file(file_path)
+        data = check_file_and_read_file(file)
         write_json(data)
 
 
