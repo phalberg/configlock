@@ -1,9 +1,8 @@
 import typer
 
-from configlock.exceptions import ConfigLockError
+from configlock.validator import ConfigLockError
 
-from .helper import  write_json, check_file_exists, check_file_identicality
-from .validator import check_compatibility, check_file_and_read_file
+from .helper import  write_json, check_file_exists, check_file_identicality, check_comp_cli, check_file_and_read_file
 from typing import Annotated
 
 app = typer.Typer()
@@ -47,7 +46,7 @@ def lock(
     Used to update the lock file, IF compatible
     """
     
-    check_compatibility(file_path, order_matters)
+    check_comp_cli(file_path, order_matters)
     data = check_file_and_read_file(file_path)
     write_json(data)
 

@@ -6,8 +6,11 @@ import filecmp
 from dotenv import load_dotenv
 import os
 
+from configlock.validator import ValidationContext, walk_yaml_in_order, walk_yaml_with_no_order
+
 load_dotenv()
 CONFIG_LOG_FILE_PATH = os.getenv('CONFIG_LOG_FILE_PATH', 'config.lock.json')
+
 
 
 
@@ -94,3 +97,29 @@ def check_file_and_read_file(file_path: str) -> dict:
     data = reader(file_path)
 
     return data
+
+
+
+def check_comp_cli(new_file_path: str, order_matters: bool | None = False) -> None:
+    """""
+    Check compatiblity for the cli version
+    Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
+    Values => must be of the same types
+    What about adding New entries? -> Fine
+    Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
+    """
+
+    current_file_path = CONFIG_LOG_FILE_PATH
+    context = ValidationContext(
+        new_path=new_file_path,
+        current_path=current_file_path,
+        order_matters=bool(order_matters)
+    )
+
+    current_data = read_json(current_file_path)
+    new_data = check_file_and_read_file(new_file_path)
+
+    if order_matters:
+        walk_yaml_in_order(current_data, new_data, context)
+    else:
+        walk_yaml_with_no_order(current_data, new_data, context)

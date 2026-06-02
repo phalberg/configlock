@@ -1,19 +1,7 @@
 from dataclasses import dataclass
 from itertools import zip_longest
 
-
-
-from .helper import check_file_and_read_file, read_json
-from dotenv import load_dotenv
-import os
-
-from .exceptions import ValidationError  
-
-load_dotenv()
-CONFIG_LOG_FILE_PATH = os.getenv('CONFIG_LOG_FILE_PATH', 'config.lock.json')
-
 keys_to_ignore = {"version"}
-
 
 
 @dataclass
@@ -24,30 +12,35 @@ class ValidationContext:
 
 # add other metadata if needed.
 
+class ConfigLockError(Exception):
+    """Basic Error"""
 
-def check_compatibility(new_file_path: str, order_matters: bool | None = False) -> None:
-    """""
-    
-    Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
-    Values => must be of the same types
-    What about adding New entries? -> Fine
-    Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
-    """
+    def __init__(self, message, error_code=1):
+        super().__init__(message)
+        self.message = message
+        self.error_code = error_code
 
-    current_file_path = CONFIG_LOG_FILE_PATH
-    context = ValidationContext(
-        new_path=new_file_path,
-        current_path=current_file_path,
-        order_matters=bool(order_matters)
-    )
 
-    current_data = read_json(current_file_path)
-    new_data = check_file_and_read_file(new_file_path)
+class ValidationError(ConfigLockError):
+    """Error for validation for syncing file"""
 
-    if order_matters:
-        walk_yaml_in_order(current_data, new_data, context)
-    else:
-        walk_yaml_with_no_order(current_data, new_data, context)
+    def __init__(self, path, expected_value, actual_value, message="Validation Failed", order_matters=False):
+        super().__init__(message, error_code=100)
+        self.path = path    
+        self.expected_value = expected_value
+        self.actual_value = actual_value
+        self.order_matters = order_matters
+
+    def __str__(self):
+        base_msg = f""" 
+        In path: {self.path} 
+        Expected: {self.expected_value}
+        Found: {self.actual_value}
+        """
+        if self.order_matters:
+            base_msg += "Additional: remember that order matters for keys!"
+        return f"{base_msg}\n(Error Code: {self.error_code})"
+
 
 
 
