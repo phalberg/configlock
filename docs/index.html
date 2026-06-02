@@ -31,19 +31,32 @@
             const urlBox = document.getElementById('url');
 
             output.innerText = "Fetching...";
-            const url = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
-            urlBox.innerText = url;
+            const lock_file = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
+            const validator_file = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
+            urlBox.innerText = lock_file;
 
             try {
-                const response = await fetch(url);
+                const lock_file_contents = await fetch(lock_file);
+                const validator_code_contents = await fetch(validator_file);
 
-                if (!response.ok) throw new Error(`GitHub error: ${response.status}`);
-                const content = await response.text();
-                output.innerText = content;
+                if (!lock_file_contents.ok) throw new Error(`GitHub error: ${lock_file_contents.status}`);
+                if (!validator_code_contents.ok) throw new Error(`GitHub error: ${validator_code_contents.status}`);
+
+                const current_lock_content = await lock_file_contents.text();
+                output.innerText = current_lock_content;
 
                 output.contentEditable = "true";
     
                 output.focus();
+
+                // Listen for any real-time changes
+                output.addEventListener('input', (event) => {
+                    // Get the latest text output
+                    const currentText = event.target.innerText;
+                    console.log("Latest output:", currentText);
+                });
+
+
 
             } catch (err) {
                 output.innerText = "Error: " + err.message;
