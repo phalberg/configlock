@@ -43,7 +43,6 @@ class ValidationError(ConfigLockError):
 
 
 
-
 def walk_yaml_with_no_order(current_data, new_data, context: ValidationContext, depth=0):
     """Recursively walks through a YAML-loaded object with no order."""
 

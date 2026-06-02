@@ -18,25 +18,27 @@ async function fetchFile() {
     let timeoutId;
     const sleep_time = 1500; 
 
-    async function startPython(runCode){
-            let pyodide = await loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"
-            });
-            pyodide.runPython(runCode);
-            console.log("Finihsed running!");
-    }
-
 
     try {
 
-
+        
+        let pyodide = await loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
 
         const lockFileContents = await fetch(lockFile);
 
         const validatorCodeContents = await fetch(validatorFile);
         const pythonCode = await validatorCodeContents.text();
+        pyodide.runPython(pythonCode);
 
-        startPython(pythonCode);
+        const validatorContext = pyodide.globals.get("ValidationContext");
+        const context = validatorContext(
+            "config.yaml",
+            "config.lock.json",
+            false
+
+        );
+        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
 
         if (!lockFileContents.ok) throw new Error(`GitHub error: ${lockFileContents.status}`);
         if (!validatorCodeContents.ok) throw new Error(`GitHub error: ${validatorCodeContents.status}`);
@@ -51,9 +53,16 @@ async function fetchFile() {
         output.oninput = async (event) => {
             const newContent = event.target.innerText;
             clearTimeout(timeoutId);
-
+            
             timeoutId = setTimeout(() => {
-                console.log("Pased YAML file here::", YAML.parse(newContent));
+                const parsedNewFile = YAML.parse(newContent);
+                validatorFunc(
+                    pyodide.toPy(parsedLockFile),
+                    pyodide.toPy(parsedNewFile),
+                    context
+                );
+                console.log("Success!")
+                
             }, sleep_time);
         };
     } catch (err) {
