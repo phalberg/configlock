@@ -1,6 +1,6 @@
 from configlock import main
 
-from configlock.exceptions import ValidationError
+from configlock.validator import ValidationError
 
 def test_not_available_file(runner_setup):
     

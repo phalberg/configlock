@@ -1,5 +1,5 @@
 from configlock import main
-from configlock.exceptions import ConfigLockError
+from configlock.validator import ConfigLockError
 
 
 

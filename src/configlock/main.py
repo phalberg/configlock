@@ -1,6 +1,6 @@
 import typer
 
-from configlock.exceptions import ConfigLockError
+from configlock.validator import ConfigLockError
 
 from .helper import  write_json, check_file_exists, check_file_identicality
 from .validator import check_compatibility, check_file_and_read_file
