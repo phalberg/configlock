@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ConfigLock Web Portal</title>
-    <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; line-height: 1.6; }
-        input, button { display: block; width: 100%; margin-bottom: 10px; padding: 10px; box-sizing: border-box; }
-        #output { background: #f4f4f4; padding: 10px; white-space: pre-wrap; border: 1px solid #ccc; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h2>ConfigLock Web Portal</h2>
@@ -16,52 +12,11 @@
     <input type="text" id="branch" placeholder="branch (e.g main)">
     <input type="text" id="path" placeholder="path/to/config.yaml">
     <button onclick="fetchFile()">Fetch Config</button>
-    <div id="url" style="margin-bottom: 10px; color: #666;"></div>
+    <div id="url"></div>
 
     <h3>Result:</h3>
     <div id="output">No data yet...</div>
 
-    <script>
-        async function fetchFile() {
-            const user = document.getElementById('user').value;
-            const repo = document.getElementById('repo').value;
-            const branch = document.getElementById('branch').value;
-            const path = document.getElementById('path').value;
-            const output = document.getElementById('output');
-            const urlBox = document.getElementById('url');
-
-            output.innerText = "Fetching...";
-            const lock_file = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
-            const validator_file = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
-            urlBox.innerText = lock_file;
-
-            try {
-                const lock_file_contents = await fetch(lock_file);
-                const validator_code_contents = await fetch(validator_file);
-
-                if (!lock_file_contents.ok) throw new Error(`GitHub error: ${lock_file_contents.status}`);
-                if (!validator_code_contents.ok) throw new Error(`GitHub error: ${validator_code_contents.status}`);
-
-                const current_lock_content = await lock_file_contents.text();
-                output.innerText = current_lock_content;
-
-                output.contentEditable = "true";
-    
-                output.focus();
-
-                // Listen for any real-time changes
-                output.addEventListener('input', (event) => {
-                    // Get the latest text output
-                    const currentText = event.target.innerText;
-                    console.log("Latest output:", currentText);
-                });
-
-
-
-            } catch (err) {
-                output.innerText = "Error: " + err.message;
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
