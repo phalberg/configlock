@@ -24,7 +24,7 @@ def check_file_identicality(file_path:str, config_file_path: str | None = CONFIG
         filecmp.clear_cache()
         res = filecmp.cmp(file_path, config_file_path, shallow=False)
         return res
-    except Exception as exc:
+    except Exception:
         filecmp.clear_cache()
         res = filecmp.cmp(file_path, config_file_path, shallow=False)
         return res
@@ -47,7 +47,7 @@ def read_yaml(file_path: str) -> dict:
     except FileNotFoundError:
         raise
     else:
-        typer.echo(f"Sucessfully read file")
+        typer.echo("Sucessfully read file")
     return data
 
 
@@ -58,7 +58,7 @@ def read_json(file_path: str) -> dict:
     except FileNotFoundError:
         raise
     else:
-        typer.echo(f"Sucessfully read file")
+        typer.echo("Sucessfully read file")
     return data
     
 def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None:
@@ -71,7 +71,7 @@ def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None
     except Exception:
         raise
     else:
-        typer.echo(f"Sucessfully wrote file")
+        typer.echo("Sucessfully wrote file")
 
 
 def check_file_and_read_file(file_path: str) -> dict:

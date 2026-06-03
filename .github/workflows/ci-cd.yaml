@@ -35,3 +35,15 @@ jobs:
         run: configlock init project_info.yaml
       - name: check locked file
         run: configlock lock project_info.yaml
+      - name: linting
+        run: uvx ruff check .
+      - name: formatting
+        run: uvx ruff format --check .
+      - name: type_consitency
+        run: uv run pyright .
+      - name: tests
+        run: uv run pytest -v --durations=0 --cov --cov-report=xml
+      - name: complexity check
+        run: uvx radon cc -s -a . 
+      - name: build
+        run: uv build
