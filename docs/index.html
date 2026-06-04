@@ -7,17 +7,18 @@
 </head>
 <body>
     <h2>ConfigLock Web Portal</h2>
-    <input type="text" id="user" placeholder="owner (e.g phalberg)">
-    <input type="text" id="repo" placeholder="repo">
-    <input type="text" id="branch" placeholder="branch (e.g main)">
-    <input type="text" id="path" placeholder="path/to/config.yaml">
+    <input type="text" id="userName" placeholder="owner (e.g phalberg)">
+    <input type="text" id="repoName" placeholder="repo">
+    <input type="text" id="branchName" placeholder="branch (e.g main)">
+    <input type="text" id="pathToFile" placeholder="path/to/config.yaml">
     <button onclick="fetchFile()">Fetch Config</button>
     <div id="url"></div>
 
     <h3>Result:</h3>
     <div id="output">No data yet...</div>
-
+    <!-- For webassembly -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+
     <script type="module" src="script.js"></script>
 </body>
 </html>
