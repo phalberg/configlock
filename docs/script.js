@@ -1,13 +1,23 @@
 import YAML from 'https://esm.sh/yaml';
 
+function formInputs(){
+    const user = document.getElementById('userName').value;
+    const repo = document.getElementById('repoName').value;
+    const branch = document.getElementById('branchName').value;
+    const path = document.getElementById('pathToFile').value;
 
-async function fetchFile() {
-    const user = document.getElementById('user').value;
-    const repo = document.getElementById('repo').value;
-    const branch = document.getElementById('branch').value;
-    const path = document.getElementById('path').value;
     const output = document.getElementById('output');
     const urlBox = document.getElementById('url');
+
+    return [user, repo, branch, path, output, urlBox];
+
+}
+
+
+async function fetchFile() {
+
+    const [user, repo, branch, path, output, urlBox] = formInputs()
+
 
     output.innerText = 'Fetching...';
     const lockFile = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
