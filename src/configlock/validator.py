@@ -4,6 +4,13 @@ from itertools import zip_longest
 keys_to_ignore = {"version"}
 
 
+'''
+Note:
+This is a strict class, meaning that webassembly will use this class.
+Beware of the contents, and try to be efficient, keep the class minimal.
+'''
+
+
 @dataclass
 class ValidationContext:
     new_path: str
