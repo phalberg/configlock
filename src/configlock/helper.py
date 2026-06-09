@@ -6,15 +6,19 @@ import filecmp
 from dotenv import load_dotenv
 import os
 
-from configlock.validator import ValidationContext, walk_yaml_in_order, walk_yaml_with_no_order
+from configlock.validator import (
+    ValidationContext,
+    walk_yaml_in_order,
+    walk_yaml_with_no_order,
+)
 
 load_dotenv()
-CONFIG_LOG_FILE_PATH = os.getenv('CONFIG_LOG_FILE_PATH', 'config.lock.json')
+CONFIG_LOG_FILE_PATH = os.getenv("CONFIG_LOG_FILE_PATH", "config.lock.json")
 
 
-
-
-def check_file_identicality(file_path:str, config_file_path: str | None = CONFIG_LOG_FILE_PATH):
+def check_file_identicality(
+    file_path: str, config_file_path: str | None = CONFIG_LOG_FILE_PATH
+):
     """Checks if files are identical, if they are it returns True, False otherwise"""
     try:
         a = check_file_and_read_file(file_path)
@@ -28,8 +32,7 @@ def check_file_identicality(file_path:str, config_file_path: str | None = CONFIG
         filecmp.clear_cache()
         res = filecmp.cmp(file_path, config_file_path, shallow=False)
         return res
-    
-    
+
 
 def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     path = Path(file_path)
@@ -37,7 +40,6 @@ def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
     if not exists:
         typer.echo(f"The path does not exist: {path}")
     return exists
-
 
 
 def read_yaml(file_path: str) -> dict:
@@ -60,11 +62,12 @@ def read_json(file_path: str) -> dict:
     else:
         typer.echo("Sucessfully read file")
     return data
-    
+
+
 def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None:
     data.update({"version": 1})
     try:
-        with open(file_path, 'w') as json_file:
+        with open(file_path, "w") as json_file:
             json.dump(data, json_file, indent=4)
     except TypeError:
         raise
@@ -99,9 +102,8 @@ def check_file_and_read_file(file_path: str) -> dict:
     return data
 
 
-
 def check_comp_cli(new_file_path: str, order_matters: bool | None = False) -> None:
-    """""
+    """ ""
     Check compatiblity for the cli version
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
     Values => must be of the same types
@@ -113,7 +115,7 @@ def check_comp_cli(new_file_path: str, order_matters: bool | None = False) -> No
     context = ValidationContext(
         new_path=new_file_path,
         current_path=current_file_path,
-        order_matters=bool(order_matters)
+        order_matters=bool(order_matters),
     )
 
     current_data = read_json(current_file_path)

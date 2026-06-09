@@ -60,12 +60,12 @@ class DocsHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(docs_root), **kwargs)
 
     def end_headers(self) -> None:
-        if self.path.endswith('.html') or self.path in {'/', ''}:
-            self.send_header('Cache-Control', 'no-store')
+        if self.path.endswith(".html") or self.path in {"/", ""}:
+            self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
     def do_GET(self) -> None:
-        if self.path == '/__reload__':
+        if self.path == "/__reload__":
             generation = self.state.generation
             self.state.wait_for_next(generation)
             self.send_response(204)
@@ -75,20 +75,20 @@ class DocsHandler(http.server.SimpleHTTPRequestHandler):
 
     def copyfile(self, source, outputfile) -> None:
         content = source.read()
-        if b'</html>' in content:
-            content = content.replace(b'</html>', RELOAD_SCRIPT + b'</html>')
-        elif self.path.endswith('.html') or self.path in {'/', ''}:
+        if b"</html>" in content:
+            content = content.replace(b"</html>", RELOAD_SCRIPT + b"</html>")
+        elif self.path.endswith(".html") or self.path in {"/", ""}:
             content += RELOAD_SCRIPT
         outputfile.write(content)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Serve docs/ with live reload.')
-    parser.add_argument('port', nargs='?', type=int, default=8000)
-    parser.add_argument('--bind', default='127.0.0.1')
+    parser = argparse.ArgumentParser(description="Serve docs/ with live reload.")
+    parser.add_argument("port", nargs="?", type=int, default=8000)
+    parser.add_argument("--bind", default="127.0.0.1")
     args = parser.parse_args()
 
-    docs_root = Path(__file__).resolve().parents[2] / 'docs'
+    docs_root = Path(__file__).resolve().parents[2] / "docs"
     state = ReloadState()
 
     observer = Observer()
@@ -104,8 +104,10 @@ def main() -> None:
 
     try:
         with contextlib.suppress(KeyboardInterrupt):
-            server = http.server.ThreadingHTTPServer((args.bind, args.port), handler_factory)
-            print(f'Serving {docs_root} at http://{args.bind}:{args.port}/')
+            server = http.server.ThreadingHTTPServer(
+                (args.bind, args.port), handler_factory
+            )
+            print(f"Serving {docs_root} at http://{args.bind}:{args.port}/")
             server.serve_forever()
     finally:
         observer.stop()

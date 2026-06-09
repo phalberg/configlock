@@ -4,11 +4,11 @@ from itertools import zip_longest
 keys_to_ignore = {"version"}
 
 
-'''
+"""
 Note:
 This is a strict class, meaning that webassembly will use this class.
 Beware of the contents, and try to be efficient, keep the class minimal.
-'''
+"""
 
 
 @dataclass
@@ -17,7 +17,9 @@ class ValidationContext:
     current_path: str
     order_matters: bool
 
+
 # add other metadata if needed.
+
 
 class ConfigLockError(Exception):
     """Basic Error"""
@@ -31,9 +33,16 @@ class ConfigLockError(Exception):
 class ValidationError(ConfigLockError):
     """Error for validation for syncing file"""
 
-    def __init__(self, path, expected_value, actual_value, message="Validation Failed", order_matters=False):
+    def __init__(
+        self,
+        path,
+        expected_value,
+        actual_value,
+        message="Validation Failed",
+        order_matters=False,
+    ):
         super().__init__(message, error_code=100)
-        self.path = path    
+        self.path = path
         self.expected_value = expected_value
         self.actual_value = actual_value
         self.order_matters = order_matters
@@ -49,13 +58,16 @@ class ValidationError(ConfigLockError):
         return f"{base_msg}\n(Error Code: {self.error_code})"
 
 
-
-def walk_yaml_with_no_order(current_data, new_data, context: ValidationContext, depth=0):
+def walk_yaml_with_no_order(
+    current_data, new_data, context: ValidationContext, depth=0
+):
     """Recursively walks through a YAML-loaded object with no order."""
 
     if isinstance(current_data, dict):
         if not isinstance(new_data, dict):
-            accept_new_value(current_value=current_data, new_value=new_data, context=context)
+            accept_new_value(
+                current_value=current_data, new_value=new_data, context=context
+            )
             return
 
         for curr_k, curr_v in current_data.items():
@@ -69,31 +81,35 @@ def walk_yaml_with_no_order(current_data, new_data, context: ValidationContext, 
             new_v = new_data[curr_k]
 
             walk_yaml_with_no_order(curr_v, new_v, context, depth + 1)
-            
+
     else:
-        accept_new_value(current_value=current_data, new_value=new_data, context=context)
+        accept_new_value(
+            current_value=current_data, new_value=new_data, context=context
+        )
 
 
 def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth=0):
     """Recursively walks through a YAML-loaded object in order."""
 
     if isinstance(current_data, dict):
-        for new_pair, curr_pair in zip_longest(new_data.items(), current_data.items(), fillvalue=(None, None)):
+        for new_pair, curr_pair in zip_longest(
+            new_data.items(), current_data.items(), fillvalue=(None, None)
+        ):
             new_k, new_v = new_pair
             curr_k, curr_v = curr_pair
 
             # specific values for our own interpretation of versionings etc.
             if curr_k in keys_to_ignore:
                 continue
-        
+
             accept_new_keys(current_key=curr_k, new_key=new_k, context=context)
 
             walk_yaml_with_no_order(new_v, curr_v, context, depth + 1)
-            
+
     else:
-        accept_new_value(current_value=current_data, new_value=new_data, context=context)
-
-
+        accept_new_value(
+            current_value=current_data, new_value=new_data, context=context
+        )
 
 
 def accept_new_keys(current_key: str, new_key: str, context: ValidationContext) -> None:
@@ -105,21 +121,20 @@ def accept_new_keys(current_key: str, new_key: str, context: ValidationContext) 
     """
 
     if current_key != new_key:
-            if context.order_matters:
-                raise ValidationError(
-                    path= context.new_path,
-                    expected_value=current_key, 
-                    actual_value=new_key,
-                    order_matters=True
-                )
-            else:
-                raise ValidationError(
-                    path=context.new_path,
-                    expected_value=current_key, 
-                    actual_value=new_key,
-                    order_matters=False
-                )
-    
+        if context.order_matters:
+            raise ValidationError(
+                path=context.new_path,
+                expected_value=current_key,
+                actual_value=new_key,
+                order_matters=True,
+            )
+        else:
+            raise ValidationError(
+                path=context.new_path,
+                expected_value=current_key,
+                actual_value=new_key,
+                order_matters=False,
+            )
 
 
 def accept_new_value(current_value, new_value, context: ValidationContext) -> None:
@@ -129,15 +144,13 @@ def accept_new_value(current_value, new_value, context: ValidationContext) -> No
     """
     type_curr = type(current_value)
     type_new = type(new_value)
-    
-    if type_curr != type_new:
-        
-            type_curr_val = f"<{type_curr.__name__}> with value: {current_value}"
-            type_next_val = f"<{type_new.__name__}> with value: {new_value}"
 
-            raise ValidationError(
-                path = context.new_path,
-                expected_value=type_curr_val,
-                actual_value=type_next_val
-            )
-        
+    if type_curr != type_new:
+        type_curr_val = f"<{type_curr.__name__}> with value: {current_value}"
+        type_next_val = f"<{type_new.__name__}> with value: {new_value}"
+
+        raise ValidationError(
+            path=context.new_path,
+            expected_value=type_curr_val,
+            actual_value=type_next_val,
+        )
