@@ -2,8 +2,6 @@ from configlock import main
 from configlock.validator import ConfigLockError
 
 
-
-
 def test_check_file_identicality(runner_with_lock_file_setup):
     with open("config.yaml", "w", encoding="utf-8") as f:
         f.write("name: example\nobject: false")
@@ -13,7 +11,7 @@ def test_check_file_identicality(runner_with_lock_file_setup):
 
 
 def test_outdated_lock_file(runner_with_lock_file_setup):
-    
+
     with open("config.yaml", "w", encoding="utf-8") as f:
         f.write("name: example")
     result = runner_with_lock_file_setup.invoke(main.app, ["sync", "config.yaml"])

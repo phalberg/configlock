@@ -6,7 +6,3 @@ if env_file.exists():
     load_dotenv(env_file)
 else:
     load_dotenv(Path(".env.example"))
-
-
-
-

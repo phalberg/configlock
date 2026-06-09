@@ -7,7 +7,6 @@ from configlock import main
 runner = CliRunner()
 
 
-
 def test_app():
     with runner.isolated_filesystem():
         with open("config.yaml", "w", encoding="utf-8") as f:

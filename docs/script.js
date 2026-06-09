@@ -1,18 +1,36 @@
 import YAML from 'https://esm.sh/yaml';
 
+function formInputs(){
+    const user = document.getElementById('userName').value;
+    const repo = document.getElementById('repoName').value;
+    const branch = document.getElementById('branchName').value;
+    const path = document.getElementById('pathToFile').value;
 
-async function fetchFile() {
-    const user = document.getElementById('user').value;
-    const repo = document.getElementById('repo').value;
-    const branch = document.getElementById('branch').value;
-    const path = document.getElementById('path').value;
     const output = document.getElementById('output');
     const urlBox = document.getElementById('url');
 
+    return [user, repo, branch, path, output, urlBox];
+
+}
+
+function retriveGithubCodeblocks(user, repo, branch, path){
+
+    const lockFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
+    const validatorFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
+
+    return [lockFilePath, validatorFilePath];
+
+}
+
+
+async function fetchFile() {
+
+    const [user, repo, branch, path, output, urlBox] = formInputs();
+
+    const [lockFilePath, validatorFilePath] = retriveGithubCodeblocks(user,repo,branch,path);
+
     output.innerText = 'Fetching...';
-    const lockFile = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
-    const validatorFile = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
-    urlBox.innerText = lockFile;
+    urlBox.innerText = lockFilePath;
 
 
     let timeoutId;
@@ -25,9 +43,9 @@ async function fetchFile() {
         let pyodide = await loadPyodide({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
 
-        const lockFileContents = await fetch(lockFile);
+        const lockFileContents = await fetch(lockFilePath);
 
-        const validatorCodeContents = await fetch(validatorFile);
+        const validatorCodeContents = await fetch(validatorFilePath);
         const pythonCode = await validatorCodeContents.text();
         pyodide.runPython(pythonCode);
 
