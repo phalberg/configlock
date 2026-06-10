@@ -13,11 +13,11 @@ from configlock.validator import (
 )
 
 load_dotenv()
-CONFIG_LOG_FILE_PATH = os.getenv("CONFIG_LOG_FILE_PATH", "config.lock.json")
+CONFIG_LOG_FILE_PATH: str = os.environ.get("CONFIG_LOG_FILE_PATH", "config.lock.json")
 
 
 def check_file_identicality(
-    file_path: str, config_file_path: str | None = CONFIG_LOG_FILE_PATH
+    file_path: str, config_file_path: str = CONFIG_LOG_FILE_PATH
 ):
     """Checks if files are identical, if they are it returns True, False otherwise"""
     try:
@@ -34,7 +34,7 @@ def check_file_identicality(
         return res
 
 
-def check_file_exists(file_path: str | None = CONFIG_LOG_FILE_PATH) -> bool:
+def check_file_exists(file_path: str = CONFIG_LOG_FILE_PATH) -> bool:
     path = Path(file_path)
     exists = path.exists()
     if not exists:
@@ -64,7 +64,7 @@ def read_json(file_path: str) -> dict:
     return data
 
 
-def write_json(data: dict, file_path: str | None = CONFIG_LOG_FILE_PATH) -> None:
+def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
     data.update({"version": 1})
     try:
         with open(file_path, "w") as json_file:
@@ -102,7 +102,7 @@ def check_file_and_read_file(file_path: str) -> dict:
     return data
 
 
-def check_comp_cli(new_file_path: str, order_matters: bool | None = False) -> None:
+def check_comp_cli(new_file_path: str, order_matters: bool = False) -> None:
     """ ""
     Check compatiblity for the cli version
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)

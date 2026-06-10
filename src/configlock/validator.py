@@ -102,7 +102,7 @@ def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth
             if curr_k in keys_to_ignore:
                 continue
 
-            accept_new_keys(current_key=curr_k, new_key=new_k, context=context)
+            accept_new_keys(curr_k, new_k, context)
 
             walk_yaml_with_no_order(new_v, curr_v, context, depth + 1)
 
@@ -112,7 +112,10 @@ def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth
         )
 
 
-def accept_new_keys(current_key: str, new_key: str, context: ValidationContext) -> None:
+# Not sure about this solution to this problem...
+def accept_new_keys(
+    current_key: str | None, new_key: str | None, context: ValidationContext
+) -> None:
     """
     General logic for accepting new keys:
     1) the name of new_key cannot be different than the name of current_key
