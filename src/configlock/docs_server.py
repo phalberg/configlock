@@ -95,12 +95,13 @@ def main() -> None:
     observer.schedule(ReloadHandler(state), str(docs_root), recursive=True)
     observer.start()
 
-    handler_factory = lambda *handler_args, **handler_kwargs: DocsHandler(
-        *handler_args,
-        docs_root=docs_root,
-        state=state,
-        **handler_kwargs,
-    )
+    def handler_factory(*handler_args, **handler_kwargs):
+        return DocsHandler(
+            *handler_args,
+            docs_root=docs_root,
+            state=state,
+            **handler_kwargs,
+        )
 
     try:
         with contextlib.suppress(KeyboardInterrupt):

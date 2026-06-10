@@ -87,4 +87,4 @@ def test_no_order_matters_works(runner_with_lock_file_setup):
     result = runner_with_lock_file_setup.invoke(main.app, ["lock", "new_file.yaml"])
 
     assert result.exit_code == 0
-    assert result.exception == None
+    assert result.exception is None
