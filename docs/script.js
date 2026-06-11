@@ -23,6 +23,46 @@ function retriveGithubCodeblocks(user, repo, branch, path){
 }
 
 
+
+async function fetchContents(lockFilePath, validatorFilePath){
+    try{
+
+        const pyodidePromise = loadPyodide({indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
+
+        const lockFileContentsPromise = fetch(lockFilePath).then((response) => {
+            if(!response.ok){
+                throw new Error(`Failed to fetch lock file: ${response.status}`);
+            }
+            return response.text();
+        });
+
+        const validatorCodeContentsPromise = fetch(validatorFilePath).then((response) =>{
+            if(!response.ok){
+                throw new Error(`Failed to fetch validator file ${response.status}`)
+            }
+
+            return response.text()
+        });
+
+
+        const [pyod, lockFile, validatorCodeContents] = await Promise.all([
+            pyodidePromise,
+            lockFileContentsPromise,
+            validatorCodeContentsPromise,
+        ]);
+
+        return [pyod, lockFile, validatorCodeContents];
+
+    } catch(error){
+
+        console.error("One of the requests failed", error);
+    }
+
+
+
+}
+
+
 async function fetchFile() {
 
     const [user, repo, branch, path, output, urlBox] = formInputs();
@@ -37,16 +77,12 @@ async function fetchFile() {
     const sleep_time = 1500; 
 
 
+
+    
     try {
-
         
-        let pyodide = await loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
-
-        const lockFileContents = await fetch(lockFilePath);
-
-        const validatorCodeContents = await fetch(validatorFilePath);
-        const pythonCode = await validatorCodeContents.text();
+        
+        const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
         pyodide.runPython(pythonCode);
 
         const validatorContext = pyodide.globals.get("ValidationContext");
@@ -58,12 +94,9 @@ async function fetchFile() {
         );
         const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
 
-        if (!lockFileContents.ok) throw new Error(`GitHub error: ${lockFileContents.status}`);
-        if (!validatorCodeContents.ok) throw new Error(`GitHub error: ${validatorCodeContents.status}`);
 
-        const currentLockContent = await lockFileContents.text();
-        output.innerText = currentLockContent;
-        const parsedLockFile = YAML.parse(currentLockContent);
+        output.innerText = lockFileContents;
+        const parsedLockFile = YAML.parse(lockFileContents);
 
 
         output.contentEditable = 'true';
