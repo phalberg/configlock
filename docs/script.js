@@ -63,6 +63,22 @@ async function fetchContents(lockFilePath, validatorFilePath){
 }
 
 
+function setValidationContext(pyodide, current_file_path){
+
+        // TODO Change TO file to actually be something meaningful!
+        const validatorContext = pyodide.globals.get("ValidationContext");
+        const context = validatorContext(
+            current_file_path,
+            "config.lock.json",
+            true
+
+        );
+
+        return context
+
+}
+
+
 async function fetchFile() {
 
     const [user, repo, branch, path, output, urlBox] = formInputs();
@@ -85,19 +101,14 @@ async function fetchFile() {
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
         pyodide.runPython(pythonCode);
 
-        const validatorContext = pyodide.globals.get("ValidationContext");
-        const context = validatorContext(
-            "config.yaml",
-            "config.lock.json",
-            false
-
-        );
-        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
-
-
+        context = setValidationContext(pyodide, path)
+        
+        
+        
         output.innerText = lockFileContents;
         const parsedLockFile = YAML.parse(lockFileContents);
-
+        
+        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
 
         output.contentEditable = 'true';
         output.focus();
