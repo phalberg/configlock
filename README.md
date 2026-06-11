@@ -1,7 +1,9 @@
 <p align="center">
   <img src="https://github.com/phalberg/configlock/actions/workflows/ci-cd.yaml/badge.svg" alt="CI Status" />
   <img src="https://img.shields.io/badge/python-3.13-blue.svg" alt="Python Version" />
-  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License" />
+  <a href="https://codecov.io/github/phalberg/configlock" > 
+ <img src="https://codecov.io/github/phalberg/configlock/graph/badge.svg?token=60JBRC22NB"/> 
+ </a>
 </p>
 
 # ConfigLock
