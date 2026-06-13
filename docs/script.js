@@ -23,6 +23,74 @@ function retriveGithubCodeblocks(user, repo, branch, path){
 }
 
 
+
+async function fetchContents(lockFilePath, validatorFilePath){
+    try{
+
+        const pyodidePromise = loadPyodide({indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
+
+        const lockFileContentsPromise = fetch(lockFilePath).then((response) => {
+            if(!response.ok){
+                throw new Error(`Failed to fetch lock file: ${response.status}`);
+            }
+            return response.text();
+        });
+
+        const validatorCodeContentsPromise = fetch(validatorFilePath).then((response) =>{
+            if(!response.ok){
+                throw new Error(`Failed to fetch validator file ${response.status}`)
+            }
+
+            return response.text()
+        });
+
+
+        const [pyod, lockFile, validatorCodeContents] = await Promise.all([
+            pyodidePromise,
+            lockFileContentsPromise,
+            validatorCodeContentsPromise,
+        ]);
+
+        return [pyod, lockFile, validatorCodeContents];
+
+    } catch(error){
+
+        console.error("One of the requests failed", error);
+    }
+
+
+
+}
+
+
+function setValidationContext(pyodide, current_file_path){
+
+        // TODO Change TO file to actually be something meaningful!
+        const validatorContext = pyodide.globals.get("ValidationContext");
+        const context = validatorContext(
+            current_file_path,
+            "config.lock.json",
+            true
+
+        );
+
+        return context
+
+}
+
+
+function initializeWebAssembly(pyodide, pythonCode, path, lockFileContents){
+        // run python code
+        pyodide.runPython(pythonCode);
+
+        const context = setValidationContext(pyodide, path)
+        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
+        const parsedLockFile = YAML.parse(lockFileContents);
+
+        return [pyodide, context,validatorFunc, parsedLockFile]
+
+}
+
 async function fetchFile() {
 
     const [user, repo, branch, path, output, urlBox] = formInputs();
@@ -37,36 +105,23 @@ async function fetchFile() {
     const sleep_time = 1500; 
 
 
+
+    
     try {
+        
+        
+        const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
+
 
         
-        let pyodide = await loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"});
-
-        const lockFileContents = await fetch(lockFilePath);
-
-        const validatorCodeContents = await fetch(validatorFilePath);
-        const pythonCode = await validatorCodeContents.text();
-        pyodide.runPython(pythonCode);
-
-        const validatorContext = pyodide.globals.get("ValidationContext");
-        const context = validatorContext(
-            "config.yaml",
-            "config.lock.json",
-            false
-
-        );
-        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
-
-        if (!lockFileContents.ok) throw new Error(`GitHub error: ${lockFileContents.status}`);
-        if (!validatorCodeContents.ok) throw new Error(`GitHub error: ${validatorCodeContents.status}`);
-
-        const currentLockContent = await lockFileContents.text();
-        output.innerText = currentLockContent;
-        const parsedLockFile = YAML.parse(currentLockContent);
-
-
+        
+        
+        output.innerText = lockFileContents;
         output.contentEditable = 'true';
+        
+        
+        const [pyoDide, context, validatorFunc, parsedLockFile] = initializeWebAssembly(pyodide, pythonCode, path, lockFileContents);
+
         output.focus();
         output.oninput = async (event) => {
             const newContent = event.target.innerText;
@@ -75,8 +130,8 @@ async function fetchFile() {
             timeoutId = setTimeout(() => {
                 const parsedNewFile = YAML.parse(newContent);
                 validatorFunc(
-                    pyodide.toPy(parsedLockFile),
-                    pyodide.toPy(parsedNewFile),
+                    pyoDide.toPy(parsedLockFile),
+                    pyoDide.toPy(parsedNewFile),
                     context
                 );
                 console.log("Success!")
