@@ -112,10 +112,6 @@ async function fetchFile() {
         
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
 
-
-        
-        
-        
         output.innerText = lockFileContents;
         output.contentEditable = 'true';
         
@@ -129,17 +125,35 @@ async function fetchFile() {
             
             timeoutId = setTimeout(() => {
                 const parsedNewFile = YAML.parse(newContent);
+
+                try{
                 validatorFunc(
-                    pyoDide.toPy(parsedLockFile),
                     pyoDide.toPy(parsedNewFile),
+                    pyoDide.toPy(parsedLockFile),
                     context
                 );
-                console.log("Success!")
-                
+                console.log("Success!");
+                errors.innerText = "Sucess!";
+                } catch(err){
+                    console.log('Error: ' + err.message);
+                    const errorStartIndex = err.message.indexOf("ValidationError:");
+
+                    if (errorStartIndex !== -1) {
+                        const cleanMessage = err.message.substring(errorStartIndex).trim();
+                            
+                        errors.innerText = cleanMessage;
+                        //showNotificationBanner(cleanMessage);
+                        
+                    }else{
+                    console.log('Error: ' + err.message);
+                }
+            }
+
             }, sleep_time);
         };
     } catch (err) {
         output.innerText = 'Error: ' + err.message;
+
     }
 }
 

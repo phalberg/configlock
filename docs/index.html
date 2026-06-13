@@ -3,22 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>ConfigLock Web Portal</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-    <h2>ConfigLock Web Portal</h2>
-    <input type="text" id="userName" placeholder="owner (e.g phalberg)">
-    <input type="text" id="repoName" placeholder="repo">
-    <input type="text" id="branchName" placeholder="branch (e.g main)">
-    <input type="text" id="pathToFile" placeholder="path/to/config.yaml">
-    <button onclick="fetchFile()">Fetch Config</button>
-    <div id="url"></div>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 sm:p-8">
 
-    <h3>Result:</h3>
-    <div id="output">No data yet...</div>
-    <!-- For webassembly -->
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <header class="border-b border-slate-200 pb-4">
+            <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl tracking-tight">ConfigLock Web Portal</h2>
+        </header>
+
+        <main class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <input type="text" id="userName" placeholder="owner (e.g phalberg)" 
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                
+                <input type="text" id="repoName" placeholder="repo" 
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                
+                <input type="text" id="branchName" placeholder="branch (e.g main)" 
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                
+                <input type="text" id="pathToFile" placeholder="path/to/config.yaml" 
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+            </div>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 pt-2">
+                <button onclick="fetchFile()" 
+                        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-xs transition-colors cursor-pointer w-full sm:w-auto text-center">
+                    Fetch Config
+                </button>
+                <div id="url" class="text-xs text-slate-400 font-mono break-all"></div>
+            </div>
+        </main>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col">
+                <h3 class="text-base font-semibold text-slate-900 mb-3">Result:</h3>
+                <div id="output" class="bg-slate-900 text-emerald-400 p-4 rounded-lg font-mono text-xs overflow-auto flex-1 min-h-[180px] whitespace-pre-wrap">No data yet...</div>
+            </section>
+
+            <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col">
+                <h3 class="text-base font-semibold text-slate-900 mb-3">Errors / Status:</h3>
+                <div id="errors" class="bg-slate-50 border border-slate-200 text-slate-600 p-4 rounded-lg font-mono text-xs overflow-auto flex-1 min-h-[180px] whitespace-pre-wrap">No errors yet..</div>
+            </section>
+            
+        </div>
+
+    </div>
+
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
-
     <script type="module" src="script.js"></script>
 </body>
 </html>
