@@ -1,4 +1,6 @@
 import YAML from 'https://esm.sh/yaml';
+import { Octokit } from "https://esm.sh/@octokit/core";
+import { createPullRequest } from "https://esm.sh/octokit-plugin-create-pull-request";
 
 function formInputs(){
     const user = document.getElementById('userName').value;
@@ -93,6 +95,15 @@ function initializeWebAssembly(pyodide, pythonCode, path, lockFileContents){
 
 async function fetchFile() {
 
+
+    const TOKEN =  document.getElementById('githubToken').value.trim();
+    const octokit = new Octokit({
+    auth: TOKEN,
+    });
+
+    const userName = octokit.request("GET /user");
+    console.log(userName);
+
     const [user, repo, branch, path, output, urlBox] = formInputs();
 
     const [lockFilePath, validatorFilePath] = retriveGithubCodeblocks(user,repo,branch,path);
@@ -103,13 +114,8 @@ async function fetchFile() {
 
     let timeoutId;
     const sleep_time = 1500; 
-
-
-
     
     try {
-        
-        
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
 
         output.innerText = lockFileContents;
