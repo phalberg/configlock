@@ -112,10 +112,6 @@ async function fetchFile() {
         
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
 
-
-        
-        
-        
         output.innerText = lockFileContents;
         output.contentEditable = 'true';
         
