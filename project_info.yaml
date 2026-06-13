@@ -1,6 +1,6 @@
-project_name: "ConfigLock"
-status: "Alpha"
+project_name: ConfigLock
+status: Alpha
 version: 1
 team:
-  lead: "Philipp Stahlberg"
+  lead: Philipp Stahlberg
   contributors: []
