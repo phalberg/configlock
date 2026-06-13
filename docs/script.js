@@ -1,4 +1,8 @@
 import YAML from 'https://esm.sh/yaml';
+import { Octokit } from "https://esm.sh/@octokit/core";
+import { createPullRequest } from "https://esm.sh/octokit-plugin-create-pull-request";
+
+const MyOctokit = Octokit.plugin(createPullRequest);
 
 function formInputs(){
     const user = document.getElementById('userName').value;
@@ -16,7 +20,7 @@ function formInputs(){
 function retriveGithubCodeblocks(user, repo, branch, path){
 
     const lockFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
-    const validatorFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
+    const validatorFilePath = `https://raw.githubusercontent.com/phalberg/configlock/main/src/configlock/validator.py`;
 
     return [lockFilePath, validatorFilePath];
 
@@ -91,7 +95,52 @@ function initializeWebAssembly(pyodide, pythonCode, path, lockFileContents){
 
 }
 
+
+async function makePRRequest(octokit, user, repo, branch, path, newData){
+
+    const stringifyYAMLData = YAML.stringify(newData);
+    try{
+    const response = await octokit.createPullRequest({
+    owner: user,
+    repo: repo,
+    title: "pull request title",
+    body: "pull request description",
+    head: "pull-request-branch-name",
+    base: branch /* optional: defaults to default branch */,
+    update: true /* optional: set to `true` to enable updating existing pull requests */,
+    forceFork: false /* optional: force creating fork even when user has write rights */,
+    labels: [
+      "feat",
+    ] /* optional: applies the given labels when user has permissions. When updating an existing pull request, already present labels will not be deleted. */,
+    changes: [
+                    {
+                    files: {
+                            // The square brackets evaluate the variable name into the actual object key!
+                            [path]: stringifyYAMLData, 
+                        },
+                        commit: `chore(config): lockfile synchronization for ${path}`,
+                    },
+                ],
+            });
+}catch(error){
+    console.log(error);
+}
+
+}
+
+
+
+
 async function fetchFile() {
+
+
+    const TOKEN =  document.getElementById('githubToken').value.trim();
+    const octokit = new MyOctokit({
+    auth: TOKEN,
+    });
+
+    //const userName = octokit.request("GET /user");
+    //console.log(userName);
 
     const [user, repo, branch, path, output, urlBox] = formInputs();
 
@@ -103,13 +152,8 @@ async function fetchFile() {
 
     let timeoutId;
     const sleep_time = 1500; 
-
-
-
     
     try {
-        
-        
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
 
         output.innerText = lockFileContents;
@@ -134,6 +178,8 @@ async function fetchFile() {
                 );
                 console.log("Success!");
                 errors.innerText = "Sucess!";
+                makePRRequest(octokit, user, repo, branch, path, parsedNewFile);
+
                 } catch(err){
                     console.log('Error: ' + err.message);
                     const errorStartIndex = err.message.indexOf("ValidationError:");
