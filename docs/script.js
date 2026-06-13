@@ -20,7 +20,7 @@ function formInputs(){
 function retriveGithubCodeblocks(user, repo, branch, path){
 
     const lockFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
-    const validatorFilePath = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/src/configlock/validator.py`;
+    const validatorFilePath = `https://raw.githubusercontent.com/phalberg/configlock/main/src/configlock/validator.py`;
 
     return [lockFilePath, validatorFilePath];
 
@@ -107,7 +107,7 @@ async function makePRRequest(octokit, user, repo, branch, path, newData){
     body: "pull request description",
     head: "pull-request-branch-name",
     base: branch /* optional: defaults to default branch */,
-    update: false /* optional: set to `true` to enable updating existing pull requests */,
+    update: true /* optional: set to `true` to enable updating existing pull requests */,
     forceFork: false /* optional: force creating fork even when user has write rights */,
     labels: [
       "feat",
