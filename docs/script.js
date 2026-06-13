@@ -129,17 +129,28 @@ async function fetchFile() {
             
             timeoutId = setTimeout(() => {
                 const parsedNewFile = YAML.parse(newContent);
+
+                try{
                 validatorFunc(
                     pyoDide.toPy(parsedLockFile),
                     pyoDide.toPy(parsedNewFile),
                     context
                 );
-                console.log("Success!")
-                
+                console.log("Success!");
+                errors.innerText = "Sucess!";
+                } catch(err){
+                    console.log('Error: ' + err.message);
+                    errors.innerText =  'Error: ' + err.message;
+                }
+
+
+
+
             }, sleep_time);
         };
     } catch (err) {
         output.innerText = 'Error: ' + err.message;
+
     }
 }
 
