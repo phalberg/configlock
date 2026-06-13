@@ -79,6 +79,18 @@ function setValidationContext(pyodide, current_file_path){
 }
 
 
+function initializeWebAssembly(pyodide, pythonCode, path, lockFileContents){
+        // run python code
+        pyodide.runPython(pythonCode);
+
+        const context = setValidationContext(pyodide, path)
+        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
+        const parsedLockFile = YAML.parse(lockFileContents);
+
+        return [pyodide, context,validatorFunc, parsedLockFile]
+
+}
+
 async function fetchFile() {
 
     const [user, repo, branch, path, output, urlBox] = formInputs();
@@ -99,18 +111,17 @@ async function fetchFile() {
         
         
         const [pyodide, lockFileContents, pythonCode] = await fetchContents(lockFilePath, validatorFilePath);
-        pyodide.runPython(pythonCode);
 
-        context = setValidationContext(pyodide, path)
+
         
         
         
         output.innerText = lockFileContents;
-        const parsedLockFile = YAML.parse(lockFileContents);
-        
-        const validatorFunc = pyodide.globals.get("walk_yaml_in_order");
-
         output.contentEditable = 'true';
+        
+        
+        const [pyoDide, context, validatorFunc, parsedLockFile] = initializeWebAssembly(pyodide, pythonCode, path, lockFileContents);
+
         output.focus();
         output.oninput = async (event) => {
             const newContent = event.target.innerText;
@@ -119,8 +130,8 @@ async function fetchFile() {
             timeoutId = setTimeout(() => {
                 const parsedNewFile = YAML.parse(newContent);
                 validatorFunc(
-                    pyodide.toPy(parsedLockFile),
-                    pyodide.toPy(parsedNewFile),
+                    pyoDide.toPy(parsedLockFile),
+                    pyoDide.toPy(parsedNewFile),
                     context
                 );
                 console.log("Success!")
