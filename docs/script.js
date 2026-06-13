@@ -140,11 +140,18 @@ async function fetchFile() {
                 errors.innerText = "Sucess!";
                 } catch(err){
                     console.log('Error: ' + err.message);
-                    errors.innerText =  'Error: ' + err.message;
+                    const errorStartIndex = err.message.indexOf("ValidationError:");
+
+                    if (errorStartIndex !== -1) {
+                        const cleanMessage = err.message.substring(errorStartIndex).trim();
+                            
+                        errors.innerText = cleanMessage;
+                        //showNotificationBanner(cleanMessage);
+                        
+                    }else{
+                    console.log('Error: ' + err.message);
                 }
-
-
-
+            }
 
             }, sleep_time);
         };
