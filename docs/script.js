@@ -128,8 +128,8 @@ async function fetchFile() {
 
                 try{
                 validatorFunc(
-                    pyoDide.toPy(parsedLockFile),
                     pyoDide.toPy(parsedNewFile),
+                    pyoDide.toPy(parsedLockFile),
                     context
                 );
                 console.log("Success!");
