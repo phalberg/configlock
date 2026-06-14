@@ -1,0 +1,42 @@
+name: Publish & Release 
+
+on:
+  push:
+    tags:
+      - 'v*' 
+
+jobs:
+  deploy:
+    name: Build, Ship to PyPI, and Create GitHub Release
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: pypi
+      url: https://pypi.org/project/cfglock
+
+    permissions:
+      id-token: write  
+      contents: write  
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Build Package Distribution
+        run: uv build --no-sources
+
+      - name: Secure Upload to PyPI
+        run: uv publish
+
+      - name: Mint GitHub Repository Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.ref_name }} dist/* \
+            --title "Release ${{ github.ref_name }}" \
+            --generate-notes
