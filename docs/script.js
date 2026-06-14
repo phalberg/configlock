@@ -4,6 +4,10 @@ import { createPullRequest } from "https://esm.sh/octokit-plugin-create-pull-req
 
 const MyOctokit = Octokit.plugin(createPullRequest);
 
+const PR_NAME = "Automated configlock PR";
+const PR_HEAD = "configlock-update";
+
+
 function formInputs(){
     const user = document.getElementById('userName').value;
     const repo = document.getElementById('repoName').value;
@@ -103,14 +107,25 @@ async function makePRRequest(octokit, user, repo, branch, path, newData){
     const response = await octokit.createPullRequest({
     owner: user,
     repo: repo,
-    title: "pull request title",
-    body: "pull request description",
-    head: "pull-request-branch-name",
+    title: PR_NAME,
+    body: `
+    ## ConfigLock Automation Report
+
+    The validation checks for this configuration file have **passed successfully** via the online portal.
+
+    ### Changes Summary
+    * **Validated File:** \`${path}\`
+    * **Sync Time:** ${new Date().toUTCString()}
+    * **Engine:** Pyodide (Python WebAssembly)
+
+    _Generated automatically by ConfigLock Portal. Please review syntax before merging._
+    `,
+    head: PR_HEAD,
     base: branch /* optional: defaults to default branch */,
     update: true /* optional: set to `true` to enable updating existing pull requests */,
     forceFork: false /* optional: force creating fork even when user has write rights */,
     labels: [
-      "feat",
+      "chore",
     ] /* optional: applies the given labels when user has permissions. When updating an existing pull request, already present labels will not be deleted. */,
     changes: [
                     {
