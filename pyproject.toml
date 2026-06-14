@@ -1,7 +1,7 @@
 [project]
-name = "configlock"
+name = "cfglock"
 version = "0.1.0"
-description = "Add your description here"
+description = "The official Python engine for the ConfigLock ecosystem"
 readme = "README.md"
 authors = [
     { name = "Philipp.Stahlberg", email = "131917964+PhilippStahlbergGit@users.noreply.github.com" }
@@ -15,8 +15,14 @@ dependencies = [
 ]
 
 [project.scripts]
-configlock = "configlock.main:main"
-docs-serve = "configlock.docs_server:main"
+configlock = "cfglock.cli:app"
+cfglock = "cfglock.cli:app"
+cfl = "cfglock.cli:app"
+docs-serve = "cfglock.docs_server:main"
+
+[project.urls]
+Homepage = "https://github.com/phalberg/configlock"
+Repository = "https://github.com/phalberg/configlock"
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12.0"]
