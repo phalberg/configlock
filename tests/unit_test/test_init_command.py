@@ -1,9 +1,9 @@
-from configlock import main
+from cfglock import cli
 
 
 def test_init_valueerror_path_error(runner_setup):
 
-    result = runner_setup.invoke(main.app, ["init", "not_available_path"])
+    result = runner_setup.invoke(cli.app, ["init", "not_available_path"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ValueError)
@@ -12,7 +12,7 @@ def test_init_valueerror_path_error(runner_setup):
 
 def test_init_path_already_exits(runner_with_lock_file_setup):
 
-    result = runner_with_lock_file_setup.invoke(main.app, ["init", "not_needed.json"])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["init", "not_needed.json"])
 
     # confirming the files contents, as to not overwrite anything
     with open("config.lock.json", "r") as f:
@@ -24,7 +24,7 @@ def test_init_path_already_exits(runner_with_lock_file_setup):
 
 def test_not_supported_file(runner_setup):
 
-    result = runner_setup.invoke(main.app, ["init", "not_supported.toml"])
+    result = runner_setup.invoke(cli.app, ["init", "not_supported.toml"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ValueError)

@@ -1,7 +1,7 @@
 import inspect
 
-from configlock import validator
-from configlock.validator import walk_yaml_with_no_order, walk_yaml_in_order
+from cfglock import validator
+from cfglock.validator import walk_yaml_with_no_order, walk_yaml_in_order
 
 
 def helper_debugging():

@@ -1,7 +1,7 @@
 from typer.testing import CliRunner
 import json
 
-from configlock import main
+from cfglock import cli
 
 
 runner = CliRunner()
@@ -12,7 +12,7 @@ def test_app():
         with open("config.yaml", "w", encoding="utf-8") as f:
             f.write("name: demo\nenabled: true\n")
 
-        result = runner.invoke(main.app, ["init", "config.yaml"])
+        result = runner.invoke(cli.app, ["init", "config.yaml"])
         assert result.exit_code == 0
 
         with open("config.lock.json", "r", encoding="utf-8") as f:

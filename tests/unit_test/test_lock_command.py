@@ -1,11 +1,11 @@
-from configlock import main
+from cfglock import cli
 
-from configlock.validator import ValidationError
+from cfglock.validator import ValidationError
 
 
 def test_not_available_file(runner_setup):
 
-    result = runner_setup.invoke(main.app, ["lock", "some_file.json"])
+    result = runner_setup.invoke(cli.app, ["lock", "some_file.json"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, FileNotFoundError)
@@ -17,7 +17,7 @@ def test_compatibility_file(runner_with_lock_file_setup):
         f.write('[section]\nkey = "value"')
 
     result = runner_with_lock_file_setup.invoke(
-        main.app, ["lock", "incompatible_file.toml"]
+        cli.app, ["lock", "incompatible_file.toml"]
     )
 
     assert result.exit_code == 1
@@ -29,7 +29,7 @@ def test_fail_new_key(runner_with_lock_file_setup):
 
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("first_name: example")
-    result = runner_with_lock_file_setup.invoke(main.app, ["lock", "new_file.yaml"])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "new_file.yaml"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ValidationError)
@@ -41,7 +41,7 @@ def test_fail_new_value(runner_with_lock_file_setup):
 
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("name: 12")
-    result = runner_with_lock_file_setup.invoke(main.app, ["lock", "new_file.yaml"])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "new_file.yaml"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ValidationError)
@@ -67,7 +67,7 @@ def test_order_matters_works(runner_with_lock_file_setup):
         f.write("object: false")
 
     result = runner_with_lock_file_setup.invoke(
-        main.app, ["lock", "new_file.yaml", "--order-matters"]
+        cli.app, ["lock", "new_file.yaml", "--order-matters"]
     )
 
     assert result.exit_code == 1
@@ -84,7 +84,7 @@ def test_no_order_matters_works(runner_with_lock_file_setup):
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("object: false\nname: example")
 
-    result = runner_with_lock_file_setup.invoke(main.app, ["lock", "new_file.yaml"])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "new_file.yaml"])
 
     assert result.exit_code == 0
     assert result.exception is None
