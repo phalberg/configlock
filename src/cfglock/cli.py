@@ -1,6 +1,6 @@
 import typer
 
-from configlock.validator import ConfigLockError
+from cfglock.validator import ConfigLockError
 
 from .helper import (
     write_json,
@@ -11,11 +11,7 @@ from .helper import (
 )
 from typing import Annotated
 
-app = typer.Typer()
-
-
-def main() -> None:
-    app()
+app = typer.Typer(help="ConfigLock: Secure GitOps YAML validation engine.")
 
 
 @app.command()
@@ -69,7 +65,3 @@ def lock(
     check_comp_cli(file_path, order_matters)
     data = check_file_and_read_file(file_path)
     write_json(data)
-
-
-if __name__ == "__main__":
-    main()

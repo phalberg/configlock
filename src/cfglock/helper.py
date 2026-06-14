@@ -6,7 +6,7 @@ import filecmp
 from dotenv import load_dotenv
 import os
 
-from configlock.validator import (
+from cfglock.validator import (
     ValidationContext,
     walk_yaml_in_order,
     walk_yaml_with_no_order,
