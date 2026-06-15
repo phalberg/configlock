@@ -1,0 +1,70 @@
+# Contributing to ConfigLock
+
+Thanks for helping improve ConfigLock.
+
+## Project setup
+
+1. Clone the repository.
+2. Install dependencies:
+
+```bash
+uv sync
+```
+
+3. Run the CLI locally:
+
+```bash
+uv run configlock --help
+```
+
+## Useful commands
+
+### Run tests
+
+```bash
+uv run pytest
+```
+
+### Lint the code
+
+```bash
+uv run ruff check src tests
+```
+
+### Format code
+
+```bash
+uv run ruff format src tests
+```
+
+### Generate CLI docs
+
+```bash
+uv run typer cfglock.cli utils docs --output CLI.md
+python scripts/merge_cli_docs.py
+```
+
+### Serve the docs locally
+
+```bash
+uv run docs-serve
+```
+
+## Development guidelines
+
+- Keep changes focused and small when possible.
+- Add or update tests when behavior changes.
+- Avoid unrelated refactors in the same pull request.
+- Keep command output and error messages clear and user-friendly.
+- Update documentation when a change affects usage.
+
+## Pull request checklist
+
+- Tests pass locally.
+- Linting passes locally.
+- Docs are updated if needed.
+- The change is described clearly in the pull request.
+
+## Need help?
+
+If something in the workflow is unclear, open an issue or mention it in your pull request.
