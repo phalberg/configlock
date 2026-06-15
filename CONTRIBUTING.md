@@ -37,6 +37,9 @@ uv run ruff check src tests
 uv run ruff format src tests
 ```
 
+## Pre-commit
+Please respect the pre-commit and use it double-check that your uv is synced and that format and linting pass, please keep `--no-verify` to a minimal.
+
 ### Generate CLI docs
 
 ```bash
