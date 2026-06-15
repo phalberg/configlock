@@ -1,6 +1,6 @@
 from pathlib import Path
 
-
+# TODO refactor and adjust this file at some later stage.
 README_PATH = Path(__file__).resolve().parents[1] / "README.md"
 CLI_DOCS_PATH = Path(__file__).resolve().parents[1] / "CLI.md"
 START_MARKER = "<!-- CLI_DOCS_START -->"
