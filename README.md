@@ -12,7 +12,21 @@ ConfigLock is a lightweight CLI tool designed to prevent production outages by c
 # Quick start
 
 ```
-# Clone the repo
+# Install from PyPi
+pip install cfglock
+
+# Initialize a lockfile
+configlock init my_config.yaml
+
+# Sync after changes
+configlock sync my_config.yaml
+```
+
+If you want to develop locally from the repository:
+
+# Quick start (locally)
+
+```bash
 git clone https://github.com/phalberg/configlock
 cd configlock
 
@@ -24,13 +38,11 @@ uv run configlock init my_config.yaml
 
 # Sync after changes
 uv run configlock sync my_config.yaml
+
 ```
 
-If you wish to not write `uv` each time, you can do as such:
 
-## CLI Usage
-
-Install the project in editable mode while developing:
+If you wish to not write `uv` each time, you can do as such (editable mode):
 
 ```bash
 pip install -e .
@@ -42,13 +54,14 @@ Run the command directly after install:
 configlock --help
 ```
 
-The full command reference below is generated from [CLI.md](CLI.md) and can be refreshed with the merge script.
+# The problem
+In modern DevOps, non-technical team members often need to edit configuration files (YAML/JSON). One missing key or a wrong data type (e.g., entering a string where a boolean is expected) may crash a production environment.
 
 <!-- CLI_DOCS_START -->
 
 # CLI
 
-ConfigLock: Secure GitOps YAML validation engine.
+<!-- ConfigLock: Secure GitOps YAML validation engine. -->
 
 **Usage**:
 
@@ -137,43 +150,6 @@ ConfigLock is a **personal hobby project** focused on learning robust CLI develo
 > [!NOTE]
 > This project is in an early prototype stage. It is a learning exercise in building developer tools with Python and Typer.
 
-### Roadmap
-- [x] Basic CLI integration with Typer
-- [x] GitHub Actions CI/CD pipeline
-- [x] Recursive Type & Structure checking
-- [ ] GitHub API integration (Fetch remote configs)
-- [ ] Web-based UI for configuration visualization
-
-# The problem
-In modern DevOps, non-technical team members often need to edit configuration files (YAML/JSON). One missing key or a wrong data type (e.g., entering a string where a boolean is expected) may crash a production environment.
-
-# Init 
-```bash
-init: Analyzes your YAML/JSON and creates a config.lock.json that stores the required structure and types.
-```
-_Note: ConfigLock generates one unique lockfile corresponding to the file path provided._
-
-# Sync
-
-```bash
-sync: Compares your current YAML/JSON against the lockfile. If a key is missing or a type has changed, you get an error.
-```
-
-# Lock
-```bash
-lock: Checks your current YAML/JSON and tries to replace the locked file with the new changed current file, if the change is not compatible, you get an error.
-
-```
-## Lock with strict ordering
-Please use the command:
-```bash
-configlock lock {path_to_your_file} --order-matters
-```
-If the order of the keys matter, if not the default:
-```bash
-configlock lock {path_to_your_file} --no-order-matters
-``` 
-will be set.
 
 # License
 
