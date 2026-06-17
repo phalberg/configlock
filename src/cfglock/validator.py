@@ -137,15 +137,13 @@ def accept_new_value(current_value, new_value, context: ValidationContext) -> No
     General logic for accepting new values:
     1) the type of the new_value cannot be different than the type of the current_value
     """
-    type_curr = type(current_value)
-    type_new = type(new_value)
 
-    if type_curr != type_new:
-        type_curr_val = f"<{type_curr.__name__}> with value: {current_value}"
-        type_next_val = f"<{type_new.__name__}> with value: {new_value}"
+    def typed_value(value):
+        return f"<{type(value).__name__}> with value: {value!r}"
 
+    if type(current_value) is not type(new_value):
         raise ValidationError(
             path=context.new_path,
-            expected_value=type_curr_val,
-            actual_value=type_next_val,
+            expected_value=typed_value(current_value),
+            actual_value=typed_value(new_value),
         )
