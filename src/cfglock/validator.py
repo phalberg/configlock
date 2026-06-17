@@ -6,7 +6,7 @@ keys_to_ignore = {"version"}
 
 """
 Note:
-This is a strict class, meaning that webassembly will use this class.
+This is a strict file, meaning that webassembly will use this class.
 Beware of the contents, and try to be efficient, keep the class minimal.
 """
 
@@ -124,20 +124,12 @@ def accept_new_keys(
     """
 
     if current_key != new_key:
-        if context.order_matters:
-            raise ValidationError(
-                path=context.new_path,
-                expected_value=current_key,
-                actual_value=new_key,
-                order_matters=True,
-            )
-        else:
-            raise ValidationError(
-                path=context.new_path,
-                expected_value=current_key,
-                actual_value=new_key,
-                order_matters=False,
-            )
+        raise ValidationError(
+            path=context.new_path,
+            expected_value=current_key,
+            actual_value=new_key,
+            order_matters=context.order_matters,
+        )
 
 
 def accept_new_value(current_value, new_value, context: ValidationContext) -> None:
