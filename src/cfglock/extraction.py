@@ -1,8 +1,7 @@
 import requests
-import json
 
 
-def ext_fr_gh_public(
+def extract_fr_gh_public(
     user: str,
     repo: str,
     branch: str,
@@ -18,7 +17,6 @@ def ext_fr_gh_public(
     return data
 
 
-if __name__ == "__main__":
-    json_data = json.dumps(ext_fr_gh_public(), indent=4)
-    with open("test_config.json", "w", encoding="utf-8") as f:
-        f.write(json_data)
+def extract_fr_gh_private(some_value: str):
+    # placeholder for now
+    pass
