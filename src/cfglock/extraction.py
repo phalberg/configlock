@@ -3,10 +3,10 @@ import json
 
 
 def ext_fr_gh_public(
-    user: str | None = "phalberg",
-    repo: str | None = "configlock",
-    branch: str | None = "main",
-    file: str | None = "config.lock.json",
+    user: str,
+    repo: str,
+    branch: str,
+    file: str,
 ):
     """
     Extract from a public github repo in GitHub, the text content
