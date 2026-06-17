@@ -104,6 +104,7 @@ def check_file_and_read_file(file_path: str) -> dict:
 
 def check_comp_cli(new_file_path: str, order_matters: bool = False) -> None:
     """ ""
+    TODO: FIX THIS COMMENTS LATER
     Check compatiblity for the cli version
     Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
     Values => must be of the same types
