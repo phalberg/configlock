@@ -27,6 +27,7 @@ async function waitForReload() {
 waitForReload();
 </script>
 """
+# TODO: refactor this file at a later stage!
 
 
 class ReloadState:

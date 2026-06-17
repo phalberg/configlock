@@ -115,7 +115,7 @@ def check_comp_cli(new_file_path: str, order_matters: bool = False) -> None:
     context = ValidationContext(
         new_path=new_file_path,
         current_path=current_file_path,
-        order_matters=bool(order_matters),
+        order_matters=order_matters,
     )
 
     current_data = read_json(current_file_path)
