@@ -102,14 +102,13 @@ def check_file_and_read_file(file_path: str) -> dict:
     return data
 
 
-def check_comp_cli(new_file_path: str, order_matters: bool = False) -> None:
+def check_compatibility(new_file_path: str, order_matters: bool = False) -> None:
     """ ""
-    TODO: FIX THIS COMMENTS LATER
-    Check compatiblity for the cli version
-    Keys => same names (must be the same, and (!) in the same (?order?)/precedence)
-    Values => must be of the same types
-    What about adding New entries? -> Fine
-    Deleting entries should not be allowed as it will obviously destroy Things. -> Fail
+    Check compatiblity for two files given the file paths
+    1) Keys must be same as previous keys, and order_matters can determine if the order also matters
+    2) Values must have the same types as previously
+    3) Adding new entries is allowed
+    4) Deleting entries is not allowed
     """
 
     current_file_path = CONFIG_LOG_FILE_PATH

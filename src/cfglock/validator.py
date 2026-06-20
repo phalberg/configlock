@@ -112,7 +112,6 @@ def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth
         )
 
 
-# Not sure about this solution to this problem...
 def accept_new_keys(
     current_key: str | None, new_key: str | None, context: ValidationContext
 ) -> None:

@@ -6,7 +6,7 @@ from .helper import (
     write_json,
     check_file_exists,
     check_file_identicality,
-    check_comp_cli,
+    check_compatibility,
     check_file_and_read_file,
 )
 from typing import Annotated
@@ -62,6 +62,6 @@ def lock(
     Used to update the lock file, IF compatible
     """
 
-    check_comp_cli(file_path, order_matters)
+    check_compatibility(file_path, order_matters)
     data = check_file_and_read_file(file_path)
     write_json(data)
