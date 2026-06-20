@@ -17,7 +17,7 @@ def helper_fail(result, error):
     assert isinstance(result.exception, error)
 
 
-def test_lock_correct(runner_setup, fixture_dir):
+def test_lock_correct(runner_with_lock_file_setup, fixture_dir):
     fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -26,7 +26,7 @@ def test_lock_correct(runner_setup, fixture_dir):
     assert isinstance(output, dict)
     assert "environment" in output["app_settings"]
 
-    result = runner_setup.invoke(cli.app, ["lock", str(fixture)])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
 
     with open("config.lock.json", "r") as f:
         output = json.load(f)
@@ -35,7 +35,7 @@ def test_lock_correct(runner_setup, fixture_dir):
     assert "environment" in output["app_settings"]
 
 
-def test_lock_string_change_ok(runner_setup, fixture_dir):
+def test_lock_string_change_ok(runner_with_lock_file_setup, fixture_dir):
     fixture = fixture_dir / "config_string_change.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -44,7 +44,7 @@ def test_lock_string_change_ok(runner_setup, fixture_dir):
     assert isinstance(output, dict)
     assert "production" in output["app_settings"]["environment"]
 
-    result = runner_setup.invoke(cli.app, ["lock", str(fixture)])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
 
     with open("config.lock.json", "r") as f:
         output = json.load(f)
@@ -53,7 +53,7 @@ def test_lock_string_change_ok(runner_setup, fixture_dir):
     assert "production" in output["app_settings"]["environment"]
 
 
-def test_lock_add_on_change_ok(runner_setup, fixture_dir):
+def test_lock_add_on_change_ok(runner_with_lock_file_setup, fixture_dir):
     fixture = fixture_dir / "config_add_on_change.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -62,7 +62,7 @@ def test_lock_add_on_change_ok(runner_setup, fixture_dir):
     assert isinstance(output, dict)
     assert "ok" in output["app_settings"]["new_entry"]
 
-    result = runner_setup.invoke(cli.app, ["lock", str(fixture)])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
 
     with open("config.lock.json", "r") as f:
         output = json.load(f)
@@ -71,7 +71,7 @@ def test_lock_add_on_change_ok(runner_setup, fixture_dir):
     assert "ok" in output["app_settings"]["new_entry"]
 
 
-def test_lock_fail_namechange(runner_setup, fixture_dir):
+def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir):
     fixture = fixture_dir / "configbreak_namechange.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -80,7 +80,7 @@ def test_lock_fail_namechange(runner_setup, fixture_dir):
     assert isinstance(output, dict)
     assert "staging" in output["app_settings"]["name_changed"]
 
-    result = runner_setup.invoke(cli.app, ["lock", str(fixture)])
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
 
     print(result.exception)
     helper_fail(result, ConfigLockError)
