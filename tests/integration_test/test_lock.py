@@ -86,3 +86,38 @@ def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir):
     assert "lock" in str(result.exc_info).lower()
     assert "expected: environment" in str(result.exception).lower()
     # assert "found: name_changed" in str(result.exception).lower() TODO: fix this at some point!!
+
+
+def test_lock_fail_typechange(runner_with_lock_file_setup, fixture_dir):
+    fixture = fixture_dir / "configbreak_typechange.yaml"
+
+    with open(fixture, "r", encoding="utf-8") as f:
+        output = yaml.safe_load(f)
+
+    assert isinstance(output, dict)
+    assert "false" in output["app_settings"]["maintenance_mode"]
+
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
+
+    helper_fail(result, ValidationError)
+    assert "lock" in str(result.exc_info).lower()
+    assert "expected: <bool> with value: false" in str(result.exception).lower()
+    assert "found: <str> with value: 'false'" in str(result.exception).lower()
+
+
+def test_lock_fail_orderchange(runner_with_lock_file_setup, fixture_dir):
+    fixture = fixture_dir / "configbreak_orderchange.yaml"
+
+    with open(fixture, "r", encoding="utf-8") as f:
+        output = yaml.safe_load(f)
+
+    assert isinstance(output, dict)
+
+    result = runner_with_lock_file_setup.invoke(
+        cli.app, ["lock", str(fixture), "--order-matters"]
+    )
+
+    helper_fail(result, ValidationError)
+    assert "expected: maintenance_mode" in str(result.exception).lower()
+    assert "found: timeout_seconds" in str(result.exception).lower()
+    assert "order matters" in str(result.exception).lower()
