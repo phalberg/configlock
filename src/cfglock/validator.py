@@ -104,7 +104,7 @@ def walk_yaml_in_order(current_data, new_data, context: ValidationContext, depth
 
             accept_new_keys(curr_k, new_k, context)
 
-            walk_yaml_with_no_order(new_v, curr_v, context, depth + 1)
+            walk_yaml_in_order(curr_v, new_v, context, depth + 1)
 
     else:
         accept_new_value(
