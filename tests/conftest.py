@@ -3,7 +3,7 @@ import pytest
 import json
 
 
-def output_debbuging(result):
+def output_debugging(result):
     print(result.exception)
     print(result.exit_code)
 
