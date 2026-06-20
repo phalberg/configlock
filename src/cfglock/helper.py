@@ -11,6 +11,7 @@ from cfglock.validator import (
     ValidationContext,
     walk_yaml_in_order,
     walk_yaml_with_no_order,
+    keys_to_ignore,
 )
 
 load_dotenv()
@@ -24,6 +25,13 @@ def check_file_identicality(
     try:
         a = check_file_and_read_file(file_path)
         b = read_json(config_file_path)
+
+        # metadata we do not care about
+        if isinstance(a, dict):
+            a = {k: v for k, v in a.items() if k not in keys_to_ignore}
+        if isinstance(b, dict):
+            b = {k: v for k, v in b.items() if k not in keys_to_ignore}
+
         if a == b:
             return True
         filecmp.clear_cache()
