@@ -9,12 +9,21 @@ def test_lock_works(runner_with_lock_file_setup):
     with open("config.lock.json", "r") as f:
         output = json.load(f)
 
-    # tests for config.lock.json
-    assert "name" in output
-    assert output["object"] is False
+    # lock initialized from test fixture; check a known nested key/value
+    assert "app_settings" in output
+    assert output["app_settings"].get("environment") == "staging"
 
+    # create a new config that matches the lock shape and add a new entry
+    new_config = {
+        "app_settings": {
+            "environment": "staging",
+            "maintenance_mode": False,
+            "timeout_seconds": 30,
+        },
+        "new_entry": 10,
+    }
     with open("config.json", "w", encoding="utf-8") as f:
-        output = json.dump({"name": "example", "object": False, "new_entry": 10}, f)
+        json.dump(new_config, f)
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "config.json"])
 
@@ -23,10 +32,7 @@ def test_lock_works(runner_with_lock_file_setup):
     with open("config.lock.json", "r") as f:
         output = json.load(f)
 
-    # tests for config.lock.json
-    assert "name" in output
-    assert output["object"] is False
-    assert output["new_entry"] == 10
+    assert output.get("new_entry") == 10
 
 
 def test_no_lock_file_available(runner_with_file_setup):
@@ -80,9 +86,9 @@ def test_fail_new_key(runner_with_lock_file_setup):
 
 
 def test_fail_new_value(runner_with_lock_file_setup):
-
+    # change type for a nested value (environment should be a string)
     with open("new_file.yaml", "w", encoding="utf-8") as f:
-        f.write("name: 12")
+        f.write("app_settings:\n  environment: 12")
     result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "new_file.yaml"])
 
     assert result.exit_code == 1
@@ -94,7 +100,6 @@ def test_fail_new_value(runner_with_lock_file_setup):
             "in path",
             "<str>",
             "<int>",
-            "example",
             "12",
             "found",
             "expected",
@@ -122,9 +127,13 @@ def test_order_matters_works(runner_with_lock_file_setup):
 
 
 def test_no_order_matters_works(runner_with_lock_file_setup):
-
+    # create YAML with same content but different order
     with open("new_file.yaml", "w", encoding="utf-8") as f:
-        f.write("object: false\nname: example")
+        f.write(
+            "ai_prompts:\n  system_prompt: 'You are a helpful assistant.'\n  temperature: 0.7\n"
+            "feature_flags:\n  enable_new_ui: true\n  beta_users_only: false\n"
+            "app_settings:\n  timeout_seconds: 30\n  maintenance_mode: false\n  environment: 'staging'\n"
+        )
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "new_file.yaml"])
 

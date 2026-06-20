@@ -1,0 +1,5 @@
+# config.yaml - correct change of string
+app_settings:
+  environment: "production"
+  maintenance_mode: false
+  timeout_seconds: 30

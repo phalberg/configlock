@@ -43,7 +43,7 @@ def sync(
         typer.echo("The file has not changed.")
     else:
         raise ConfigLockError(
-            "The lock file is outdated, run sync to update the lock file!", error_code=1
+            "The lock file is outdated, run lock to update the lock file!", error_code=1
         )
 
 
