@@ -52,24 +52,27 @@ def check_file_exists(file_path: str = CONFIG_LOG_FILE_PATH) -> bool:
 
 
 def read_yaml(file_path: str) -> dict:
-    try:
-        with open(file_path, "r") as f:
-            data = yaml.safe_load(f)
-    except FileNotFoundError:
-        raise
-    else:
-        typer.echo("Sucessfully read file")
+    with open(file_path, "r") as f:
+        data = yaml.safe_load(f) or {}
+
+        if not isinstance(data, dict):
+            raise TypeError(
+                f"Expected YAML object/dict in {file_path}, got {type(data).__name__}"
+            )
+    typer.echo("Successfully read file")
     return data
 
 
 def read_json(file_path: str) -> dict:
-    try:
-        with open(file_path, "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        raise
-    else:
-        typer.echo("Sucessfully read file")
+    with open(file_path, "r") as f:
+        data = json.load(f) or {}
+
+        if not isinstance(data, dict):
+            raise TypeError(
+                f"Expected YAML object/dict in {file_path}, got {type(data).__name__}"
+            )
+
+    typer.echo("Successfully read file")
     return data
 
 
@@ -83,7 +86,7 @@ def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
     except OSError as exc:
         raise OSError(f"Could not write JSON file at {file_path}: {exc}") from exc
     else:
-        typer.echo("Sucessfully wrote file")
+        typer.echo("Successfully wrote file")
 
 
 def check_file_and_read_file(file_path: str) -> dict:
