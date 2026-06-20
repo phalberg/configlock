@@ -1,16 +1,11 @@
-from pathlib import Path
 import yaml
 import json
 
 from cfglock import cli
 
 
-def fixture_dir() -> Path:
-    return Path(__file__).resolve().parents[1] / "test_files"
-
-
-def test_reading_files(runner_setup):
-    fixture = fixture_dir() / "config.yaml"
+def test_reading_files(runner_setup, fixture_dir):
+    fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
         output = yaml.safe_load(f)

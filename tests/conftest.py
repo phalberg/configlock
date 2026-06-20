@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from typer.testing import CliRunner
 import pytest
 import json
@@ -6,6 +8,11 @@ import json
 def output_debugging(result):
     print(result.exception)
     print(result.exit_code)
+
+
+@pytest.fixture
+def fixture_dir():
+    yield Path(__file__).resolve().parent / "test_files"
 
 
 @pytest.fixture
