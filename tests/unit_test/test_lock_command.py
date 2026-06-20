@@ -1,6 +1,36 @@
 from cfglock import cli
 
 from cfglock.validator import ValidationError
+import json
+
+
+def test_lock_works(runner_with_lock_file_setup):
+
+    with open("config.lock.json", "r") as f:
+        output = json.load(f)
+
+    # tests for config.lock.json
+    assert "name" in output
+    assert output["object"] is False
+
+    with open("config.json", "w", encoding="utf-8") as f:
+        output = json.dump({"name": "example", "object": False, "new_entry": 10}, f)
+
+    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", "config.json"])
+
+    assert result.exit_code == 0
+
+    with open("config.lock.json", "r") as f:
+        output = json.load(f)
+
+    # tests for config.lock.json
+    assert "name" in output
+    assert output["object"] is False
+    assert output["new_entry"] == 10
+
+
+def test_no_lock_file_available():
+    pass
 
 
 def test_not_available_file(runner_setup):
