@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 
 from cfglock.validator import (
+    ConfigLockError,
     ValidationContext,
     walk_yaml_in_order,
     walk_yaml_with_no_order,
@@ -110,7 +111,7 @@ def check_compatibility(new_file_path: str, order_matters: bool = False) -> None
     3) Adding new entries is allowed
     4) Deleting entries is not allowed
     """
-
+    # the lock file
     current_file_path = CONFIG_LOG_FILE_PATH
     context = ValidationContext(
         new_path=new_file_path,
@@ -118,8 +119,12 @@ def check_compatibility(new_file_path: str, order_matters: bool = False) -> None
         order_matters=order_matters,
     )
 
-    current_data = read_json(current_file_path)
     new_data = check_file_and_read_file(new_file_path)
+
+    try:
+        current_data = read_json(current_file_path)
+    except FileNotFoundError:
+        raise ConfigLockError("lock file was not found, please use init")
 
     if order_matters:
         walk_yaml_in_order(current_data, new_data, context)
