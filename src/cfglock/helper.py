@@ -78,10 +78,10 @@ def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
     try:
         with open(file_path, "w") as json_file:
             json.dump(data, json_file, indent=4)
-    except TypeError:
-        raise
-    except Exception:
-        raise
+    except TypeError as exc:
+        raise TypeError(f"Data could not be serialized to JSON: {exc}") from exc
+    except OSError as exc:
+        raise OSError(f"Could not write JSON file at {file_path}: {exc}") from exc
     else:
         typer.echo("Sucessfully wrote file")
 
