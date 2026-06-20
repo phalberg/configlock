@@ -1,6 +1,27 @@
 from cfglock import cli
 
 
+def test_init_works(runner_with_file_setup):
+
+    result = runner_with_file_setup.invoke(cli.app, ["init", "config.json"])
+
+    with open("config.json", "r") as f:
+        output = f.read()
+
+    # tests for config.json
+    assert result.exit_code == 0
+    assert "name" in output
+    assert "object" in output
+
+    with open("config.lock.json", "r") as f:
+        output = f.read()
+
+    # tests for config.lock.json
+    assert result.exit_code == 0
+    assert "name" in output
+    assert "object" in output
+
+
 def test_init_valueerror_path_error(runner_setup):
 
     result = runner_setup.invoke(cli.app, ["init", "not_available_path"])
