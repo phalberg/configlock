@@ -39,7 +39,7 @@ def test_sync_outdated_source_file(runner_with_lock_file_setup, fixture_dir):
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ConfigLockError)
-    assert "lock file is outdated" in result.exception
+    assert "lock file is outdated" in str(result.exception).lower()
 
 
 def test_sync_outdated_lock_file(runner_with_lock_file_setup, fixture_dir):
