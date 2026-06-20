@@ -18,7 +18,7 @@ def test_init_works(runner_with_file_setup):
     with open("config.lock.json", "r") as f:
         output = json.load(f)
 
-    # tests for config.lock.json
+    # tests for config.lock.json (should match the input config.json)
     assert result.exit_code == 0
     assert "name" in output
     assert output["object"] is False
@@ -41,7 +41,8 @@ def test_init_path_already_exits(runner_with_lock_file_setup):
     with open("config.lock.json", "r") as f:
         output = f.read()
 
-    assert "example" in str(output)
+    # the lock fixture is now derived from the YAML fixture; check a known key
+    assert "app_settings" in str(output)
     assert "file already exists" in str(result.output).lower()
 
 

@@ -35,6 +35,17 @@ def runner_with_file_setup():
 def runner_with_lock_file_setup():
     runner = CliRunner()
     with runner.isolated_filesystem():
+        # initialize lock file from the repository fixture `tests/test_files/config.yaml`
+        fixture = Path(__file__).resolve().parent / "test_files" / "config.yaml"
+        import yaml
+
+        with open(fixture, "r", encoding="utf-8") as fh:
+            data = yaml.safe_load(fh)
+
+        # ensure lock file contains a version
+        if isinstance(data, dict):
+            data.setdefault("version", 1)
+
         with open("config.lock.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example", "object": False}, f)
+            json.dump(data, f)
         yield runner
