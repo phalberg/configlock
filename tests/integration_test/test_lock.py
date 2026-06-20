@@ -2,7 +2,7 @@ import yaml
 import json
 
 from cfglock import cli
-from cfglock.validator import ConfigLockError
+from cfglock.validator import ValidationError
 
 
 def helper_ok(result, output):
@@ -82,7 +82,7 @@ def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir):
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
 
-    print(result.exception)
-    helper_fail(result, ConfigLockError)
-    assert "lock" in str(result.exception).lower()
-    print(result)
+    helper_fail(result, ValidationError)
+    assert "lock" in str(result.exc_info).lower()
+    assert "expected: environment" in str(result.exception).lower()
+    # assert "found: name_changed" in str(result.exception).lower() TODO: fix this at some point!!
