@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from itertools import zip_longest
 
 keys_to_ignore = {"version"}
-
+# TODO: this needs to actually change for each new versioning that is being made.
 
 """
 Note:
