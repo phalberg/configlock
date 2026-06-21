@@ -1,6 +1,5 @@
-# config.yaml
+# config.yaml - order changed
 app_settings:
   environment: "staging"
-  maintenance_mode: false
   timeout_seconds: 30
-
+  maintenance_mode: false
