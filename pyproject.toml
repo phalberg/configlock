@@ -1,6 +1,6 @@
 [project]
 name = "cfglock"
-version = "0.1.4"
+version = "0.1.5"
 description = "The official Python engine for the ConfigLock ecosystem"
 readme = "README.md"
 authors = [
