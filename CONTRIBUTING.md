@@ -53,6 +53,15 @@ python scripts/merge_cli_docs.py
 uv run docs-serve
 ```
 
+## New versionings (only admins)
+New versions to PyPi and releases can be made with the following:
+1) Make a manual change to the pyproject.toml file for `version` with CORRESPONDING_NEW_VERSION (e.g say: version = "0.1.5")
+2) `uv sync`
+3) `git add .`
+4) `git commit -m "chore: release new version"`
+5) `git tag v.CORRESPONDING_NEW_VERSION`
+6) `git push origin main --tags` (remember to push with the new tag(s)!)
+
 ## Development guidelines
 
 - Keep changes focused and small when possible.
