@@ -3,8 +3,10 @@
   <img src="https://img.shields.io/badge/python-3.13-blue.svg" alt="Python Version" />
   <a href="https://codecov.io/github/phalberg/configlock" > 
  <img src="https://codecov.io/github/phalberg/configlock/graph/badge.svg?token=60JBRC22NB"/> 
+   <img src="https://sonarcloud.io/api/project_badges/measure?project=phalberg_configlock&metric=coverage"/>
  </a>
 </p>
+
 
 # ConfigLock
 ConfigLock is a lightweight CLI tool designed to prevent production outages by configuration errors. It brings the concept of Lockfiles (inspiration from uv) to your application’s .yaml or .json configurations.
