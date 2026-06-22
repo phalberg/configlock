@@ -54,7 +54,7 @@ jobs:
 
       - name: tests with coverage
         run: |
-          uv run pytest -v --durations=0 --cov=configlock --cov-report=term-missing --cov-report=xml:coverage.xml
+          uv run pytest -v --durations=0 --cov=src/configlock --cov-report=term-missing --cov-report=xml:coverage.xml
           ls -lah coverage.xml
 
       - name: Upload coverage reports to Codecov
