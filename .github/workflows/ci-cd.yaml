@@ -10,11 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: install uv
         uses: astral-sh/setup-uv@v3
         with:
           version: "0.11.14"
+
       - run: uv lock --locked
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
@@ -31,23 +36,35 @@ jobs:
 
       - name: initialize the file first using configlock
         run: configlock init project_info.yaml
+
       - name: check locked file
         run: configlock lock project_info.yaml
 
       - name: linting
         run: uvx ruff check .
+
       - name: formatting
         run: uvx ruff format --check .
+
       - name: type_consitency
         run: uv run pyright .
+
       - name: complexity check
-        run: uvx radon cc -s -a . 
-      - name: tests
-        run: uv run pytest -v --durations=0 --cov --cov-report=xml
+        run: uvx radon cc -s -a .
+
+      - name: tests with coverage
+        run: uv run pytest -v --durations=0 --cov=src/configlock --cov-report=xml:coverage.xml
+        
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          
+          files: coverage.xml
+
+      - name: SonarQube Cloud scan
+        uses: SonarSource/sonarqube-scan-action@v8.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: build
         run: uv build
