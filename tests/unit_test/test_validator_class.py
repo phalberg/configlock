@@ -1,5 +1,7 @@
 import inspect
 
+import pytest
+
 from cfglock import validator
 from cfglock.validator import walk_yaml_with_no_order, walk_yaml_in_order
 
@@ -57,9 +59,17 @@ def test_sig_context():
     assert ("current_path", str) in val_context_sig.items()
 
 
-def test_sig_walk_n_order():
+@pytest.mark.parametrize(
+    "name_def",
+    [
+        (walk_yaml_with_no_order),
+        (walk_yaml_in_order),
+    ],
+    ids=["Signature without order", "Signature with order"],
+)
+def test_sig_walk_n_order(name_def):
 
-    walk_n_order_sig, sig = helper_sig_def(name_def=walk_yaml_with_no_order)
+    walk_n_order_sig, sig = helper_sig_def(name_def=name_def)
 
     sig_list = ["current_data", "new_data", "context", "depth"]
 
@@ -69,25 +79,7 @@ def test_sig_walk_n_order():
     assert all(value.name for value in dict_walk_n_order.values() for _ in sig_list)
     assert ("context", sig_obj) in dict_walk_n_order.items()
 
-
-def test_sig_walk_w_order():
-
-    walk_w_order, sig = helper_sig_def(name_def=walk_yaml_in_order)
-    dict_walk_w_order = dict(walk_w_order)
-
-    sig_obj = sig.parameters["context"]
-
-    sig_list = ["current_data", "new_data", "context", "depth"]
-
-    assert all(value.name for value in dict_walk_w_order.values() for _ in sig_list)
-    assert ("context", sig_obj) in dict_walk_w_order.items()
-
-    # TODO ADD TEST CASES FOR THESE TOO:
+    # TODO ADD TEST CASES FOR THESE TOO: (check for assert above too.)
     # 1) accept_n_key = helper_sig_class(name_class=validator.accept_new_keys)
 
     # 2) accept_n_val = helper_sig_class(name_class=validator.accept_new_value)
-
-
-if __name__ == "__main__":
-    # helper_debugging()
-    pass
