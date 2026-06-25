@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from cfglock import cli
 
 
@@ -24,15 +26,6 @@ def test_init_works(runner_with_file_setup):
     assert output["object"] is False
 
 
-def test_init_valueerror_path_error(runner_setup):
-
-    result = runner_setup.invoke(cli.app, ["init", "not_available_path"])
-
-    assert result.exit_code == 1
-    assert isinstance(result.exception, ValueError)
-    assert "read the file" in str(result.exception).lower()
-
-
 def test_init_path_already_exits(runner_with_lock_file_setup):
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["init", "not_needed.json"])
@@ -46,10 +39,18 @@ def test_init_path_already_exits(runner_with_lock_file_setup):
     assert "file already exists" in str(result.output).lower()
 
 
-def test_not_supported_file(runner_setup):
+@pytest.mark.parametrize(
+    "input_arg, expected_text",
+    [
+        ("not_available_path", "read the file"),
+        ("not_supported.toml", "not able to read the file"),
+    ],
+    ids=["ValueError path error", "ValueError unsupported file"],
+)
+def test_init_not_possible_operations(input_arg, expected_text, runner_setup):
 
-    result = runner_setup.invoke(cli.app, ["init", "not_supported.toml"])
+    result = runner_setup.invoke(cli.app, ["init", input_arg])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, ValueError)
-    assert "not able to read the file" in str(result.exception).lower()
+    assert expected_text in str(result.exception).lower()
