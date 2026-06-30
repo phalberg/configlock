@@ -109,23 +109,23 @@ async function makePRRequest(octokit, user, repo, branch, path, newData){
     repo: repo,
     title: PR_NAME,
     body: `
-    ## ConfigLock Automation Report
+## ConfigLock Automation Report
 
-    The validation checks for this configuration file have **passed successfully** via the online portal.
+The validation checks for this configuration file have **passed successfully** via the online portal.
 
-    ### Changes Summary
-    * **Validated File:** \`${path}\`
-    * **Sync Time:** ${new Date().toUTCString()}
-    * **Engine:** Pyodide (Python WebAssembly)
+### Changes Summary
+* **Validated File:** \`${path}\`
+* **Sync Time:** ${new Date().toUTCString()}
+* **Engine:** Pyodide (Python WebAssembly)
 
-    _Generated automatically by ConfigLock Portal. Please review syntax before merging._
+_Generated automatically by ConfigLock Portal. Please review syntax before merging._
     `,
     head: PR_HEAD,
     base: branch /* optional: defaults to default branch */,
     update: true /* optional: set to `true` to enable updating existing pull requests */,
     forceFork: false /* optional: force creating fork even when user has write rights */,
     labels: [
-      "chore",
+      "chore,",
     ] /* optional: applies the given labels when user has permissions. When updating an existing pull request, already present labels will not be deleted. */,
     changes: [
                     {

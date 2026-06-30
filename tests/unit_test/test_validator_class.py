@@ -93,5 +93,6 @@ def test_accept_new_value_and_keys(name_def):
     sig_obj = sig.parameters["context"]
 
     # TODO: fix to use something like: sig.parameters.get("context").annotation.__name__, later sine we dont need to actually create a dict here!
+    # more docs in: "https://docs.python.org/3/tutorial/controlflow.html#special-parameters" "function annotations"
     assert all(param in sig.parameters for param in expected_params)
     assert ("context", sig_obj) in dict_accept.items()
