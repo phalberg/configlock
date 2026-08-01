@@ -1,15 +1,16 @@
+from typing import Annotated
+
 import typer
 
 from cfglock.validator import ConfigLockError
 
 from .helper import (
-    write_json,
+    FileReaderFactory,
+    check_compatibility,
     check_file_exists,
     check_file_identicality,
-    check_compatibility,
-    check_file_and_read_file,
+    write_json,
 )
-from typing import Annotated
 
 app = typer.Typer(help="ConfigLock: Secure GitOps YAML validation engine.")
 
@@ -26,7 +27,7 @@ def init(
     if check_file_exists():
         typer.echo("File already exists!")
     else:
-        data = check_file_and_read_file(file_path)
+        data = FileReaderFactory.load(file_path)
         write_json(data)
 
 
@@ -63,5 +64,5 @@ def lock(
     """
 
     check_compatibility(file_path, order_matters)
-    data = check_file_and_read_file(file_path)
+    data = FileReaderFactory.load(file_path)
     write_json(data)

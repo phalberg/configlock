@@ -41,16 +41,16 @@ jobs:
         run: configlock lock project_info.yaml
 
       - name: linting
-        run: uvx ruff check .
+        run: uv run ruff check .
 
       - name: formatting
-        run: uvx ruff format --check .
+        run: uv run ruff format --check .
 
       - name: type_consitency
         run: uv run pyright .
 
       - name: complexity check
-        run: uvx radon cc -s -a .
+        run: uv run radon cc -s -a .
 
       - name: tests with coverage
         run: uv run pytest -v --durations=0 --cov --cov-report=xml

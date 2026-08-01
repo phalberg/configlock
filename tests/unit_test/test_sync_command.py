@@ -12,7 +12,7 @@ def test_check_file_identicality(runner_with_lock_file_setup):
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["sync", "config.yaml"])
     assert result.exit_code == 0
-    assert isinstance(result.exception, type(None))
+    assert result.exception is None
 
 
 def test_outdated_lock_file(runner_with_lock_file_setup):

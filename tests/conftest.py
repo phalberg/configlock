@@ -1,8 +1,8 @@
+import json
 from pathlib import Path
 
-from typer.testing import CliRunner
 import pytest
-import json
+from typer.testing import CliRunner
 
 
 def output_debugging(result):
