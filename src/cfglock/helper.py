@@ -68,9 +68,7 @@ def read_json(file_path: str) -> dict:
         data = json.load(f) or {}
 
         if not isinstance(data, dict):
-            raise TypeError(
-                f"Expected YAML object/dict in {file_path}, got {type(data).__name__}"
-            )
+            raise TypeError(f"Expected JSON in {file_path}, got {type(data).__name__}")
 
     typer.echo("Successfully read file")
     return data
