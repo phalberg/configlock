@@ -3,6 +3,7 @@ import json
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import ClassVar
 
 import typer
 import yaml
@@ -56,7 +57,7 @@ class JsonReader(FileReader):
 
 
 class FileReaderFactory:
-    reader = {
+    reader: ClassVar[dict[str, FileReader]] = {
         ".yaml": YamlReader(),
         ".yml": YamlReader(),
         ".json": JsonReader(),
@@ -107,7 +108,7 @@ def check_file_identicality(
         filecmp.clear_cache()
         res = filecmp.cmp(file_path, config_file_path, shallow=False)
         return res
-    except Exception:
+    except OSError:
         filecmp.clear_cache()
         res = filecmp.cmp(file_path, config_file_path, shallow=False)
         return res
