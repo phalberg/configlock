@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import typer
 import yaml
 import json
@@ -17,14 +19,83 @@ from cfglock.validator import (
 load_dotenv()
 CONFIG_LOG_FILE_PATH: str = os.environ.get("CONFIG_LOG_FILE_PATH", "config.lock.json")
 
+# TODO: remove typer.echo at some point!
+
+
+class FileReader(ABC):
+    @abstractmethod
+    def read(self, file_path: str) -> dict:
+        """Reads the appropriate file."""
+        pass
+
+
+class YamlReader(FileReader):
+    def read(self, file_path: str) -> dict:
+        with open(file_path, "r") as f:
+            data = yaml.safe_load(f) or {}
+
+            if not isinstance(data, dict):
+                raise TypeError(
+                    f"Expected YAML object/dict in {file_path}, got {type(data).__name__}"
+                )
+        typer.echo("Successfully read file")
+        return data
+
+
+class JsonReader(FileReader):
+    def read(self, file_path: str) -> dict:
+        with open(file_path, "r") as f:
+            data = json.load(f) or {}
+
+            if not isinstance(data, dict):
+                raise TypeError(
+                    f"Expected JSON in {file_path}, got {type(data).__name__}"
+                )
+
+        typer.echo("Successfully read file")
+        return data
+
+
+class FileReaderFactory:
+    reader = {
+        ".yaml": YamlReader(),
+        ".yml": YamlReader(),
+        ".json": JsonReader(),
+    }
+
+    @classmethod
+    def load(cls, file_path: str) -> dict:
+        """Loads the relevant filetype.
+        args
+            file_path(str): str representation of file path.
+        returns
+            a dictionary with the contents of the file
+        """
+        # TODO: fix the file_path being only str, it can be Path also!
+
+        path = Path(file_path)
+        suffix = path.suffix.lower()
+
+        reader = cls.reader.get(suffix)
+
+        if not reader:
+            typer.echo(
+                f"File not suppported: {suffix}. Use .yaml, .yml, or .json.",
+                err=True,
+            )
+            raise ValueError("Error not able to read the file")
+
+        typer.echo(f"Reading {file_path}...")
+        return reader.read(file_path)
+
 
 def check_file_identicality(
     file_path: str, config_file_path: str = CONFIG_LOG_FILE_PATH
 ):
     """Checks if files are identical, if they are it returns True, False otherwise"""
     try:
-        a = check_file_and_read_file(file_path)
-        b = read_json(config_file_path)
+        a = FileReaderFactory.load(file_path)
+        b = FileReaderFactory.load(config_file_path)
 
         # metadata we do not care about
         if isinstance(a, dict):
@@ -51,29 +122,6 @@ def check_file_exists(file_path: str = CONFIG_LOG_FILE_PATH) -> bool:
     return exists
 
 
-def read_yaml(file_path: str) -> dict:
-    with open(file_path, "r") as f:
-        data = yaml.safe_load(f) or {}
-
-        if not isinstance(data, dict):
-            raise TypeError(
-                f"Expected YAML object/dict in {file_path}, got {type(data).__name__}"
-            )
-    typer.echo("Successfully read file")
-    return data
-
-
-def read_json(file_path: str) -> dict:
-    with open(file_path, "r") as f:
-        data = json.load(f) or {}
-
-        if not isinstance(data, dict):
-            raise TypeError(f"Expected JSON in {file_path}, got {type(data).__name__}")
-
-    typer.echo("Successfully read file")
-    return data
-
-
 def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
     data.update({"version": 1})
     try:
@@ -85,31 +133,6 @@ def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
         raise OSError(f"Could not write JSON file at {file_path}: {exc}") from exc
     else:
         typer.echo("Successfully wrote file")
-
-
-def check_file_and_read_file(file_path: str) -> dict:
-    typer.echo(f"Reading {file_path}...")
-
-    path = Path(file_path)
-    suffix = path.suffix.lower()
-
-    reader_by_suffix = {
-        ".yaml": read_yaml,
-        ".yml": read_yaml,
-        ".json": read_json,
-    }
-
-    reader = reader_by_suffix.get(suffix)
-    if reader is None:
-        typer.echo(
-            f"File not suppported: {suffix}. Use .yaml, .yml, or .json.",
-            err=True,
-        )
-        raise ValueError("Error not able to read the file")
-
-    data = reader(file_path)
-
-    return data
 
 
 def check_compatibility(new_file_path: str, order_matters: bool = False) -> None:
@@ -127,11 +150,10 @@ def check_compatibility(new_file_path: str, order_matters: bool = False) -> None
         current_path=current_file_path,
         order_matters=order_matters,
     )
-
-    new_data = check_file_and_read_file(new_file_path)
+    new_data = FileReaderFactory.load(new_file_path)
 
     try:
-        current_data = read_json(current_file_path)
+        current_data = FileReaderFactory.load(current_file_path)
     except FileNotFoundError:
         raise ConfigLockError("lock file was not found, please use init")
 
