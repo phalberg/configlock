@@ -1,15 +1,16 @@
+from typing import Annotated
+
 import typer
 
 from cfglock.validator import ConfigLockError
 
 from .helper import (
     FileReaderFactory,
-    write_json,
+    check_compatibility,
     check_file_exists,
     check_file_identicality,
-    check_compatibility,
+    write_json,
 )
-from typing import Annotated
 
 app = typer.Typer(help="ConfigLock: Secure GitOps YAML validation engine.")
 

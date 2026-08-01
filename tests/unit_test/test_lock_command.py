@@ -1,7 +1,7 @@
-from cfglock import cli
-
-from cfglock.validator import ConfigLockError, ValidationError
 import json
+
+from cfglock import cli
+from cfglock.validator import ConfigLockError, ValidationError
 
 
 def test_lock_works(runner_with_lock_file_setup):

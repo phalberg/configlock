@@ -6,8 +6,8 @@ from cfglock import validator
 from cfglock.validator import (
     accept_new_keys,
     accept_new_value,
-    walk_yaml_with_no_order,
     walk_yaml_in_order,
+    walk_yaml_with_no_order,
 )
 
 

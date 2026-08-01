@@ -1,19 +1,19 @@
+import filecmp
+import json
+import os
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 import typer
 import yaml
-import json
-from pathlib import Path
-import filecmp
 from dotenv import load_dotenv
-import os
 
 from cfglock.validator import (
     ConfigLockError,
     ValidationContext,
+    keys_to_ignore,
     walk_yaml_in_order,
     walk_yaml_with_no_order,
-    keys_to_ignore,
 )
 
 load_dotenv()
@@ -26,7 +26,6 @@ class FileReader(ABC):
     @abstractmethod
     def read(self, file_path: str) -> dict:
         """Reads the appropriate file."""
-        pass
 
 
 class YamlReader(FileReader):

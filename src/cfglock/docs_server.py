@@ -9,7 +9,6 @@ from pathlib import Path
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-
 RELOAD_SCRIPT = b"""
 <script>
 async function waitForReload() {
