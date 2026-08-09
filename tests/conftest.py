@@ -18,6 +18,7 @@ def fixture_dir():
 @pytest.fixture
 def runner_setup():
     runner = CliRunner()
+    # TODO: remove and perhaps add tmp_path to use instead?
     with runner.isolated_filesystem():
         yield runner
 
