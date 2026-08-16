@@ -5,11 +5,6 @@ import pytest
 from typer.testing import CliRunner
 
 
-def output_debugging(result):
-    print(result.exception)
-    print(result.exit_code)
-
-
 @pytest.fixture
 def fixture_dir():
     yield Path(__file__).resolve().parent / "test_files"
