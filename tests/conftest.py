@@ -10,12 +10,10 @@ def fixture_dir():
     yield Path(__file__).resolve().parent / "test_files"
 
 
-@pytest.fixture
+@pytest.fixture(name="runner")
 def runner_setup():
     runner = CliRunner()
-    # TODO: remove and perhaps add tmp_path to use instead?
-    with runner.isolated_filesystem():
-        yield runner
+    yield runner
 
 
 @pytest.fixture
