@@ -5,21 +5,15 @@ import pytest
 from typer.testing import CliRunner
 
 
-def output_debugging(result):
-    print(result.exception)
-    print(result.exit_code)
-
-
 @pytest.fixture
 def fixture_dir():
     yield Path(__file__).resolve().parent / "test_files"
 
 
-@pytest.fixture
+@pytest.fixture(name="runner")
 def runner_setup():
     runner = CliRunner()
-    with runner.isolated_filesystem():
-        yield runner
+    yield runner
 
 
 @pytest.fixture
