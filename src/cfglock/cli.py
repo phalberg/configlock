@@ -64,7 +64,11 @@ def lock(
     """
     Used to update the lock file, IF compatible
     """
-
-    check_compatibility(file_path, order_matters)
-    data = FileReaderFactory.load(file_path)
-    write_json(data)
+    if check_file_exists(file_path):
+        check_compatibility(file_path, order_matters)
+        data = FileReaderFactory.load(file_path)
+        parent = Path(file_path).parent
+        write_json(data, parent)
+    else:
+        typer.echo("File does not exist, please create a lock file using init first.")
+        raise ConfigLockError("lock file was not found, please create it first")

@@ -130,7 +130,8 @@ def write_json(data: dict, file_path: str | None = None) -> None:
     data.update({"version": 1})
     if file_path is None:
         file_path = CONFIG_LOG_FILE_PATH 
-    new_path = file_path / CONFIG_LOG_FILE_PATH
+    parent_path = Path(file_path)
+    new_path = parent_path / CONFIG_LOG_FILE_PATH
     try:
         with open(new_path, "w") as json_file:
             json.dump(data, json_file, indent=4)
@@ -142,7 +143,7 @@ def write_json(data: dict, file_path: str | None = None) -> None:
         typer.echo("Successfully wrote file")
 
 
-def check_compatibility(new_file_path: str, order_matters: bool = False) -> None:
+def check_compatibility(new_file_path: str, current_file_path: str | None = None, order_matters: bool = False) -> None:
     """ ""
     Check compatiblity for two files given the file paths
     1) Keys must be same as previous keys, and order_matters can determine if the order also matters
@@ -151,16 +152,18 @@ def check_compatibility(new_file_path: str, order_matters: bool = False) -> None
     4) Deleting entries is not allowed
     """
     # the lock file
-    current_file_path = CONFIG_LOG_FILE_PATH
+    if current_file_path is None:
+        current_file_path = CONFIG_LOG_FILE_PATH
+    curr_file_path = current_file_path / "config.lock.json"
     context = ValidationContext(
         new_path=new_file_path,
-        current_path=current_file_path,
+        current_path=curr_file_path,
         order_matters=order_matters,
     )
     new_data = FileReaderFactory.load(new_file_path)
 
     try:
-        current_data = FileReaderFactory.load(current_file_path)
+        current_data = FileReaderFactory.load(curr_file_path)
     except FileNotFoundError:
         raise ConfigLockError("lock file was not found, please use init")
 
