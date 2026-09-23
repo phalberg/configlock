@@ -64,7 +64,7 @@ class FileReaderFactory:
     }
 
     @classmethod
-    def load(cls, file_path: str) -> dict:
+    def load(cls, file_path: str | Path) -> dict:
         """Loads the relevant filetype.
         args
             file_path(str): str representation of file path.
@@ -114,18 +114,25 @@ def check_file_identicality(
         return res
 
 
-def check_file_exists(file_path: str = CONFIG_LOG_FILE_PATH) -> bool:
-    path = Path(file_path)
+def check_file_exists(file_path: str | None = None) -> bool:
+    if file_path is None:
+        file_path = CONFIG_LOG_FILE_PATH
+    
+    path_parent = Path(file_path).parent
+    path = path_parent / CONFIG_LOG_FILE_PATH
     exists = path.exists()
     if not exists:
         typer.echo(f"The path does not exist: {path}")
     return exists
 
 
-def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
+def write_json(data: dict, file_path: str | None = None) -> None:
     data.update({"version": 1})
+    if file_path is None:
+        file_path = CONFIG_LOG_FILE_PATH 
+    new_path = file_path / CONFIG_LOG_FILE_PATH
     try:
-        with open(file_path, "w") as json_file:
+        with open(new_path, "w") as json_file:
             json.dump(data, json_file, indent=4)
     except TypeError as exc:
         raise TypeError(f"Data could not be serialized to JSON: {exc}") from exc

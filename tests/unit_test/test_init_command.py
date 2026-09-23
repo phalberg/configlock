@@ -5,26 +5,22 @@ import pytest
 from cfglock import cli
 
 
-def test_init_works(runner, runner_with_file_setup, tmp_path):
+def test_init_works(runner, tmp_path):
     
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"name": "example", "object": False}))
-    
     
     result = runner.invoke(cli.app, ["init", str(path)])
 
     with open(path, "r") as f:
         output = json.load(f)
-        print(output)
 
     # tests for config.json
     assert result.exit_code == 0
     assert "name" in output
     assert output["object"] is False
-    print("TEMP_PATH:", tmp_path)
-    file_names = [file.name for file in tmp_path.iterdir()]
-    print(file_names)
-    with open(tmp_path / "config.lock.json", "r") as f:
+    lock_file_path = tmp_path / "config.lock.json"
+    with open(lock_file_path, "r") as f:
         output = json.load(f)
 
     # tests for config.lock.json (should match the input config.json)
