@@ -5,30 +5,15 @@ import pytest
 from typer.testing import CliRunner
 
 
-def output_debugging(result):
-    print(result.exception)
-    print(result.exit_code)
-
-
 @pytest.fixture
 def fixture_dir():
     yield Path(__file__).resolve().parent / "test_files"
 
 
-@pytest.fixture
+@pytest.fixture(name="runner")
 def runner_setup():
     runner = CliRunner()
-    with runner.isolated_filesystem():
-        yield runner
-
-
-@pytest.fixture
-def runner_with_file_setup():
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        with open("config.json", "w", encoding="utf-8") as f:
-            json.dump({"name": "example", "object": False}, f)
-        yield runner
+    yield runner
 
 
 @pytest.fixture

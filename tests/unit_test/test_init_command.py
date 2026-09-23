@@ -5,19 +5,22 @@ import pytest
 from cfglock import cli
 
 
-def test_init_works(runner_with_file_setup):
+def test_init_works(runner, tmp_path):
+    
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps({"name": "example", "object": False}))
+    
+    result = runner.invoke(cli.app, ["init", str(path)])
 
-    result = runner_with_file_setup.invoke(cli.app, ["init", "config.json"])
-
-    with open("config.json", "r") as f:
+    with open(path, "r") as f:
         output = json.load(f)
 
     # tests for config.json
     assert result.exit_code == 0
     assert "name" in output
     assert output["object"] is False
-
-    with open("config.lock.json", "r") as f:
+    lock_file_path = tmp_path / "config.lock.json"
+    with open(lock_file_path, "r") as f:
         output = json.load(f)
 
     # tests for config.lock.json (should match the input config.json)
@@ -47,10 +50,12 @@ def test_init_path_already_exits(runner_with_lock_file_setup):
     ],
     ids=["ValueError path error", "ValueError unsupported file"],
 )
-def test_init_not_possible_operations(input_arg, expected_text, runner_setup):
+def test_init_not_possible_operations(input_arg, expected_text, runner, tmp_path):
 
-    result = runner_setup.invoke(cli.app, ["init", input_arg])
+    path = tmp_path / input_arg
+    result = runner.invoke(cli.app, ["init", str(path)])
 
+    assert not path.exists()
     assert result.exit_code == 1
     assert isinstance(result.exception, ValueError)
     assert expected_text in str(result.exception).lower()

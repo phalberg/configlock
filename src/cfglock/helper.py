@@ -64,7 +64,7 @@ class FileReaderFactory:
     }
 
     @classmethod
-    def load(cls, file_path: str) -> dict:
+    def load(cls, file_path: str | Path) -> dict:
         """Loads the relevant filetype.
         args
             file_path(str): str representation of file path.
@@ -114,18 +114,26 @@ def check_file_identicality(
         return res
 
 
-def check_file_exists(file_path: str = CONFIG_LOG_FILE_PATH) -> bool:
-    path = Path(file_path)
+def check_file_exists(file_path: str | None = None) -> bool:
+    if file_path is None:
+        file_path = CONFIG_LOG_FILE_PATH
+    
+    path_parent = Path(file_path).parent
+    path = path_parent / CONFIG_LOG_FILE_PATH
     exists = path.exists()
     if not exists:
         typer.echo(f"The path does not exist: {path}")
     return exists
 
 
-def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
+def write_json(data: dict, file_path: str | None = None) -> None:
     data.update({"version": 1})
+    if file_path is None:
+        file_path = CONFIG_LOG_FILE_PATH 
+    parent_path = Path(file_path)
+    new_path = parent_path / CONFIG_LOG_FILE_PATH
     try:
-        with open(file_path, "w") as json_file:
+        with open(new_path, "w") as json_file:
             json.dump(data, json_file, indent=4)
     except TypeError as exc:
         raise TypeError(f"Data could not be serialized to JSON: {exc}") from exc
@@ -135,7 +143,7 @@ def write_json(data: dict, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
         typer.echo("Successfully wrote file")
 
 
-def check_compatibility(new_file_path: str, order_matters: bool = False) -> None:
+def check_compatibility(new_file_path: str, curr_file_path: str | None = None, * ,order_matters: bool = False) -> None:
     """ ""
     Check compatiblity for two files given the file paths
     1) Keys must be same as previous keys, and order_matters can determine if the order also matters
@@ -144,7 +152,11 @@ def check_compatibility(new_file_path: str, order_matters: bool = False) -> None
     4) Deleting entries is not allowed
     """
     # the lock file
-    current_file_path = CONFIG_LOG_FILE_PATH
+    current_file_path = None
+    if curr_file_path is None:
+        current_file_path = Path(CONFIG_LOG_FILE_PATH)
+    else:
+        current_file_path = curr_file_path / "config.lock.json"
     context = ValidationContext(
         new_path=new_file_path,
         current_path=current_file_path,

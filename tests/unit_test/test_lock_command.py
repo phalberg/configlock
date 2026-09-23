@@ -35,25 +35,32 @@ def test_lock_works(runner_with_lock_file_setup):
     assert output.get("new_entry") == 10
 
 
-def test_no_lock_file_available(runner_with_file_setup):
+def test_no_lock_file_available(runner, tmp_path):
+    
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps({"name": "example", "object": False}))
 
-    result = runner_with_file_setup.invoke(cli.app, ["lock", "config.json"])
+    result = runner.invoke(cli.app, ["lock", str(path)])
 
-    with open("config.json", "r") as f:
+    with open(path, "r") as f:
         output = json.load(f)
+        print(output)
 
     # tests for config.lock.json
     assert "name" in output
     assert output["object"] is False
 
     assert result.exit_code == 1
+    print(result.exc_info)
+    print(result)
+    print(result.output)
     assert isinstance(result.exception, ConfigLockError)
     assert "lock file was not found" in str(result.exception).lower()
 
 
-def test_not_available_file(runner_setup):
+def test_not_available_file(runner):
 
-    result = runner_setup.invoke(cli.app, ["lock", "some_file.json"])
+    result = runner.invoke(cli.app, ["lock", "some_file.json"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, FileNotFoundError)
