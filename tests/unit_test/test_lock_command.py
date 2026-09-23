@@ -58,9 +58,9 @@ def test_no_lock_file_available(runner, tmp_path):
     assert "lock file was not found" in str(result.exception).lower()
 
 
-def test_not_available_file(runner_setup):
+def test_not_available_file(runner):
 
-    result = runner_setup.invoke(cli.app, ["lock", "some_file.json"])
+    result = runner.invoke(cli.app, ["lock", "some_file.json"])
 
     assert result.exit_code == 1
     assert isinstance(result.exception, FileNotFoundError)

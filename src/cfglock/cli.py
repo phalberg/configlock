@@ -65,7 +65,7 @@ def lock(
     Used to update the lock file, IF compatible
     """
     if check_file_exists(file_path):
-        check_compatibility(file_path, order_matters)
+        check_compatibility(file_path, order_matters=order_matters)
         data = FileReaderFactory.load(file_path)
         parent = Path(file_path).parent
         write_json(data, parent)

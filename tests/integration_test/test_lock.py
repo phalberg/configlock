@@ -23,6 +23,7 @@ def test_lock_correct(runner_with_lock_file_setup, fixture_dir):
 
     with open(fixture, "r", encoding="utf-8") as f:
         output = yaml.safe_load(f)
+        print(output)
 
     assert isinstance(output, dict)
     assert "environment" in output["app_settings"]
