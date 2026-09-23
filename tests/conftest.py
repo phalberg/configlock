@@ -17,22 +17,6 @@ def runner_setup():
 
 
 @pytest.fixture
-def runner_with_file_setup(tmp_path):
-    # deprecate this thing.
-    
-    runner = CliRunner()
-    path = tmp_path / "config.json"
-    path.write_text(json.dumps({"name": "example", "object": False}))
-    
-    
-    # runner = CliRunner()
-    # with runner.isolated_filesystem():
-    #     with open("config.json", "w", encoding="utf-8") as f:
-    #         json.dump({"name": "example", "object": False}, f)
-    #     yield runner
-
-
-@pytest.fixture
 def runner_with_lock_file_setup():
     runner = CliRunner()
     with runner.isolated_filesystem():
