@@ -28,6 +28,7 @@ def init(
         typer.echo("File already exists!")
     else:
         data = FileReaderFactory.load(file_path)
+        # this has to have a path argument, that is retrived from data above.
         write_json(data)
 
 
