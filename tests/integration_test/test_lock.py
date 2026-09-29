@@ -27,7 +27,7 @@ def test_lock_correct(runner_with_lockfile, fixture_dir):
 
     assert isinstance(output, dict)
     assert "environment" in output["app_settings"]
-    
+
     runner, lock_path = runner_with_lockfile
 
     result = runner.invoke(cli.app, ["lock", str(lock_path)])

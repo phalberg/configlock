@@ -36,7 +36,7 @@ def test_lock_works(runner_with_lock_file_setup):
 
 
 def test_no_lock_file_available(runner, tmp_path):
-    
+
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"name": "example", "object": False}))
 

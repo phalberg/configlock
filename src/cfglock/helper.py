@@ -117,7 +117,7 @@ def check_file_identicality(
 def check_file_exists(file_path: str | None = None) -> bool:
     if file_path is None:
         file_path = CONFIG_LOG_FILE_PATH
-    
+
     path_parent = Path(file_path).parent
     path = path_parent / CONFIG_LOG_FILE_PATH
     exists = path.exists()
@@ -129,7 +129,7 @@ def check_file_exists(file_path: str | None = None) -> bool:
 def write_json(data: dict, file_path: str | None = None) -> None:
     data.update({"version": 1})
     if file_path is None:
-        file_path = CONFIG_LOG_FILE_PATH 
+        file_path = CONFIG_LOG_FILE_PATH
     parent_path = Path(file_path)
     new_path = parent_path / CONFIG_LOG_FILE_PATH
     try:
@@ -143,7 +143,12 @@ def write_json(data: dict, file_path: str | None = None) -> None:
         typer.echo("Successfully wrote file")
 
 
-def check_compatibility(new_file_path: str, curr_file_path: str | None = None, * ,order_matters: bool = False) -> None:
+def check_compatibility(
+    new_file_path: str,
+    curr_file_path: str | None = None,
+    *,
+    order_matters: bool = False,
+) -> None:
     """ ""
     Check compatiblity for two files given the file paths
     1) Keys must be same as previous keys, and order_matters can determine if the order also matters

@@ -6,10 +6,10 @@ from cfglock import cli
 
 
 def test_init_works(runner, tmp_path):
-    
+
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"name": "example", "object": False}))
-    
+
     result = runner.invoke(cli.app, ["init", str(path)])
 
     with open(path, "r") as f:
