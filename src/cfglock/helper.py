@@ -156,7 +156,8 @@ def check_compatibility(new_file_path: str, curr_file_path: str | None = None, *
     if curr_file_path is None:
         current_file_path = Path(CONFIG_LOG_FILE_PATH)
     else:
-        current_file_path = curr_file_path / "config.lock.json"
+        parent_new = Path(new_file_path).parent
+        current_file_path = parent_new / "config.lock.json"
     context = ValidationContext(
         new_path=new_file_path,
         current_path=current_file_path,
