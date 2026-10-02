@@ -3,7 +3,8 @@ import json
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ClassVar
+from typing import ClassVar, Any
+from collections.abc import Mapping
 
 import typer
 import yaml
@@ -23,14 +24,19 @@ CONFIG_LOG_FILE_PATH: str = os.environ.get("CONFIG_LOG_FILE_PATH", "config.lock.
 # TODO: remove typer.echo at some point!
 
 
-class FileReader(ABC):
+type MappingValue = dict[str, Any]
+
+
+class FileReader[T: Mapping[str, Any]](ABC):
     @abstractmethod
-    def read(self, file_path: str) -> dict:
+    def read(self, file_path: str) -> T:
         """Reads the appropriate file."""
+        pass
 
 
-class YamlReader(FileReader):
-    def read(self, file_path: str) -> dict:
+class YamlReader(FileReader[MappingValue]):
+    def read(self, file_path: str) -> MappingValue:
+        # TODO: i belive thsi can also return back a list with no dict actually...
         with open(file_path, "r") as f:
             data = yaml.safe_load(f) or {}
 
@@ -42,8 +48,8 @@ class YamlReader(FileReader):
         return data
 
 
-class JsonReader(FileReader):
-    def read(self, file_path: str) -> dict:
+class JsonReader(FileReader[MappingValue]):
+    def read(self, file_path: str) -> MappingValue:
         with open(file_path, "r") as f:
             data = json.load(f) or {}
 
@@ -57,21 +63,20 @@ class JsonReader(FileReader):
 
 
 class FileReaderFactory:
-    reader: ClassVar[dict[str, FileReader]] = {
+    reader: ClassVar[dict[str, FileReader[MappingValue]]] = {
         ".yaml": YamlReader(),
         ".yml": YamlReader(),
         ".json": JsonReader(),
     }
 
     @classmethod
-    def load(cls, file_path: str | Path) -> dict:
+    def load(cls, file_path: str) -> MappingValue:
         """Loads the relevant filetype.
         args
             file_path(str): str representation of file path.
         returns
             a dictionary with the contents of the file
         """
-        # TODO: fix the file_path being only str, it can be Path also!
 
         path = Path(file_path)
         suffix = path.suffix.lower()
@@ -91,7 +96,7 @@ class FileReaderFactory:
 
 def check_file_identicality(
     file_path: str, config_file_path: str = CONFIG_LOG_FILE_PATH
-):
+) -> bool:
     """Checks if files are identical, if they are it returns True, False otherwise"""
     try:
         a = FileReaderFactory.load(file_path)
@@ -126,7 +131,7 @@ def check_file_exists(file_path: str | None = None) -> bool:
     return exists
 
 
-def write_json(data: dict, file_path: str | None = None) -> None:
+def write_json(data: MappingValue, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
     data.update({"version": 1})
     if file_path is None:
         file_path = CONFIG_LOG_FILE_PATH
