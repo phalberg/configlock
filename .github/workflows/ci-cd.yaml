@@ -47,7 +47,7 @@ jobs:
         run: uv run ruff format --check .
 
       - name: type_consitency
-        run: uv run pyright .
+        run: uv run mypy . 
 
       - name: complexity check
         run: uv run radon cc -s -a .

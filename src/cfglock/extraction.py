@@ -1,12 +1,14 @@
 import requests
 
+from typing import Any
+
 
 def extract_fr_gh_public(
     user: str,
     repo: str,
     branch: str,
     file: str,
-):
+) -> dict[str, Any]:
     """
     Extract from a public github repo in GitHub, the text content
     """
@@ -17,6 +19,6 @@ def extract_fr_gh_public(
     return data
 
 
-def extract_fr_gh_private(some_value: str):
+def extract_fr_gh_private(some_value: str) -> None:
     # placeholder for now
     pass

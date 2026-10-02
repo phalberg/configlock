@@ -24,7 +24,7 @@ class ValidationContext:
 class ConfigLockError(Exception):
     """Basic Error"""
 
-    def __init__(self, message, error_code=1):
+    def __init__(self, message, error_code=1) -> None:
         super().__init__(message)
         self.message = message
         self.error_code = error_code

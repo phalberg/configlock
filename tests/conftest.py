@@ -2,12 +2,13 @@ import json
 import yaml
 from pathlib import Path
 
+from typing import Generator
 import pytest
 from typer.testing import CliRunner
 
 
 @pytest.fixture
-def fixture_dir():
+def fixture_dir() -> Generator[Path, None, None]:
     yield Path(__file__).resolve().parent / "test_files"
 
 
