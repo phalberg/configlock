@@ -1,8 +1,6 @@
-from pathlib import Path
-
-from dotenv import load_dotenv
-
 from . import cli
+from pathlib import Path
+from dotenv import load_dotenv
 
 env_file = Path(".env")
 if env_file.exists():
@@ -11,4 +9,4 @@ else:
     load_dotenv(Path(".env.example"))
 
 
-__all__ = cli
+__all__ = ["cli"]
