@@ -7,6 +7,7 @@ from cfglock.validator import ValidationError
 
 
 def helper_ok(result, output):
+    print(result.exception)
     assert result.exit_code == 0
     assert output["version"] == 1
     # interesting case, false -> False (real boolean type)
@@ -18,7 +19,7 @@ def helper_fail(result, error):
     assert isinstance(result.exception, error)
 
 
-def test_lock_correct(runner_with_lock_file_setup, fixture_dir):
+def test_lock_correct(runner_with_lockfile, fixture_dir):
     fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -27,10 +28,13 @@ def test_lock_correct(runner_with_lock_file_setup, fixture_dir):
     assert isinstance(output, dict)
     assert "environment" in output["app_settings"]
 
-    result = runner_with_lock_file_setup.invoke(cli.app, ["lock", str(fixture)])
+    runner, lock_path = runner_with_lockfile
 
-    with open("config.lock.json", "r") as f:
+    result = runner.invoke(cli.app, ["lock", str(lock_path)])
+
+    with open(lock_path, "r") as f:
         output = json.load(f)
+        print("LOCK_FILE", output)
 
     helper_ok(result, output)
     assert "environment" in output["app_settings"]
