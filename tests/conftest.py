@@ -13,13 +13,15 @@ def fixture_dir() -> Generator[Path, None, None]:
 
 
 @pytest.fixture(name="runner")
-def runner_setup():
+def runner_setup() -> Generator[CliRunner, None, None]:
     runner = CliRunner()
     yield runner
 
 
 @pytest.fixture
-def runner_with_lockfile(fixture_dir, runner, tmp_path):
+def runner_with_lockfile(
+    fixture_dir: Path, runner: CliRunner, tmp_path: Path
+) -> Generator[tuple[CliRunner, Path], None, None]:
 
     fixture_file = fixture_dir / "config.yaml"
 

@@ -131,7 +131,7 @@ def check_file_exists(file_path: str | None = None) -> bool:
     return exists
 
 
-def write_json(data: MappingValue, file_path: str = CONFIG_LOG_FILE_PATH) -> None:
+def write_json(data: MappingValue, file_path: str | None = None) -> None:
     data.update({"version": 1})
     if file_path is None:
         file_path = CONFIG_LOG_FILE_PATH
