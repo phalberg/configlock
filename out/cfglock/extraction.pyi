@@ -1,0 +1,6 @@
+from typing import Any
+
+def extract_fr_gh_public(
+    user: str, repo: str, branch: str, file: str
+) -> dict[str, Any]: ...
+def extract_fr_gh_private(some_value: str) -> None: ...
