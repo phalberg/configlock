@@ -1,11 +1,13 @@
 import json
+from pathlib import Path
 
 import pytest
+from typer.testing import CliRunner
 
 from cfglock import cli
 
 
-def test_init_works(runner, tmp_path):
+def test_init_works(runner: CliRunner, tmp_path: Path) -> None:
 
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"name": "example", "object": False}))
@@ -29,7 +31,7 @@ def test_init_works(runner, tmp_path):
     assert output["object"] is False
 
 
-def test_init_path_already_exits(runner_with_lock_file_setup):
+def test_init_path_already_exits(runner_with_lock_file_setup: CliRunner) -> None:
 
     result = runner_with_lock_file_setup.invoke(cli.app, ["init", "not_needed.json"])
 
@@ -50,7 +52,12 @@ def test_init_path_already_exits(runner_with_lock_file_setup):
     ],
     ids=["ValueError path error", "ValueError unsupported file"],
 )
-def test_init_not_possible_operations(input_arg, expected_text, runner, tmp_path):
+def test_init_not_possible_operations(
+    input_arg: str,
+    expected_text: str,
+    runner: CliRunner,
+    tmp_path: Path,
+) -> None:
 
     path = tmp_path / input_arg
     result = runner.invoke(cli.app, ["init", str(path)])
