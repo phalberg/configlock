@@ -3,12 +3,6 @@ import inspect
 import pytest
 
 from cfglock import validator
-from cfglock.validator import (
-    accept_new_keys,
-    accept_new_value,
-    walk_yaml_in_order,
-    walk_yaml_with_no_order,
-)
 
 
 def helper_sig_class(name_class):
@@ -47,8 +41,8 @@ def test_sig_context() -> None:
 @pytest.mark.parametrize(
     "name_def",
     [
-        walk_yaml_with_no_order,
-        walk_yaml_in_order,
+        validator.walk_yaml_with_no_order,
+        validator.walk_yaml_in_order,
     ],
     ids=["Signature without order", "Signature with order"],
 )
@@ -68,8 +62,8 @@ def test_sig_walk_n_order(name_def) -> None:
 @pytest.mark.parametrize(
     "name_def",
     [
-        accept_new_keys,
-        accept_new_value,
+        validator.accept_new_keys,
+        validator.accept_new_value,
     ],
     ids=[
         "check signature of accepting new keys",
