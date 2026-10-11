@@ -32,7 +32,7 @@ def helper_sig_def(name_def):
     return params, sig
 
 
-def test_sig_context():
+def test_sig_context() -> None:
 
     val_context_sig = helper_sig_class(name_class=validator.ValidationContext)
 
@@ -52,7 +52,7 @@ def test_sig_context():
     ],
     ids=["Signature without order", "Signature with order"],
 )
-def test_sig_walk_n_order(name_def):
+def test_sig_walk_n_order(name_def) -> None:
 
     walk_n_order_sig, sig = helper_sig_def(name_def=name_def)
 
@@ -76,7 +76,7 @@ def test_sig_walk_n_order(name_def):
         "check signature for accepting new values",
     ],
 )
-def test_accept_new_value_and_keys(name_def):
+def test_accept_new_value_and_keys(name_def) -> None:
     accept_new, sig = helper_sig_def(name_def)
 
     sig_list_keys = ["current_key", "new_key", "context"]
