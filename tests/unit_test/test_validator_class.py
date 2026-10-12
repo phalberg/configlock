@@ -2,6 +2,8 @@ import inspect
 
 import pytest
 
+from typing import get_type_hints
+
 from cfglock import validator
 
 
@@ -10,9 +12,7 @@ def helper_sig_class(name_class):
     Retrive the signature of a class.
     """
 
-    sig = inspect.getfullargspec(name_class).annotations
-
-    return sig
+    return get_type_hints(name_class)
 
 
 def helper_sig_def(name_def):
@@ -29,10 +29,8 @@ def helper_sig_def(name_def):
 def test_sig_context() -> None:
 
     val_context_sig = helper_sig_class(name_class=validator.ValidationContext)
-
     sig_list = ["new_path", "current_path", "order_matters"]
 
-    assert ("return", None) in val_context_sig.items()
     assert all(key in val_context_sig for key in sig_list)
     assert ("new_path", str) in val_context_sig.items()
     assert ("current_path", str) in val_context_sig.items()
