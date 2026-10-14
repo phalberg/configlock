@@ -15,6 +15,7 @@ def helper_sig_class(name_class: validator.ValidationContext) -> dict[str, Any]:
     return get_type_hints(name_class)
 
 
+# TODO: simplifly the logic for this one perhaps
 def helper_sig_def(name_def):
     """
     Retrive parameters and signature of a defintion.

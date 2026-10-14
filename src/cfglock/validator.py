@@ -40,14 +40,14 @@ class ValidationError(ConfigLockError):
         actual_value,
         message="Validation Failed",
         order_matters=False,
-    ):
+    ) -> None:
         super().__init__(message, error_code=100)
         self.path = path
         self.expected_value = expected_value
         self.actual_value = actual_value
         self.order_matters = order_matters
 
-    def __str__(self):
+    def __str__(self) -> str:
         base_msg = f""" 
         In path: {self.path} 
         Expected: {self.expected_value}
@@ -139,7 +139,7 @@ def accept_new_value[T](
     1) the type of the new_value cannot be different than the type of the current_value
     """
 
-    def typed_value(value):
+    def typed_value(value) -> str:
         return f"<{type(value).__name__}> with value: {value!r}"
 
     if type(current_value) is not type(new_value):

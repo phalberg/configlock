@@ -6,7 +6,7 @@ from cfglock import cli
 from cfglock.validator import ValidationError
 
 
-def helper_ok(result, output):
+def helper_ok(result, output) -> None:
     print(result.exception)
     assert result.exit_code == 0
     assert output["version"] == 1
@@ -14,12 +14,12 @@ def helper_ok(result, output):
     assert not output["app_settings"]["maintenance_mode"]
 
 
-def helper_fail(result, error):
+def helper_fail(result, error) -> None:
     assert result.exit_code == 1
     assert isinstance(result.exception, error)
 
 
-def test_lock_correct(runner_with_lockfile, fixture_dir):
+def test_lock_correct(runner_with_lockfile, fixture_dir) -> None:
     fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -40,7 +40,7 @@ def test_lock_correct(runner_with_lockfile, fixture_dir):
     assert "environment" in output["app_settings"]
 
 
-def test_lock_string_change_ok(runner_with_lock_file_setup, fixture_dir):
+def test_lock_string_change_ok(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "config_string_change.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -58,7 +58,7 @@ def test_lock_string_change_ok(runner_with_lock_file_setup, fixture_dir):
     assert "production" in output["app_settings"]["environment"]
 
 
-def test_lock_add_on_change_ok(runner_with_lock_file_setup, fixture_dir):
+def test_lock_add_on_change_ok(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "config_add_on_change.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -76,7 +76,7 @@ def test_lock_add_on_change_ok(runner_with_lock_file_setup, fixture_dir):
     assert "ok" in output["app_settings"]["new_entry"]
 
 
-def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir):
+def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "configbreak_namechange.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -93,7 +93,7 @@ def test_lock_fail_namechange(runner_with_lock_file_setup, fixture_dir):
     # assert "found: name_changed" in str(result.exception).lower() TODO: fix this at some point!!
 
 
-def test_lock_fail_typechange(runner_with_lock_file_setup, fixture_dir):
+def test_lock_fail_typechange(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "configbreak_typechange.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -110,7 +110,7 @@ def test_lock_fail_typechange(runner_with_lock_file_setup, fixture_dir):
     assert "found: <str> with value: 'false'" in str(result.exception).lower()
 
 
-def test_lock_fail_orderchange(runner_with_lock_file_setup, fixture_dir):
+def test_lock_fail_orderchange(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "configbreak_orderchange.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
