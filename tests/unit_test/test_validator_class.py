@@ -2,12 +2,12 @@ import inspect
 
 import pytest
 
-from typing import get_type_hints
+from typing import get_type_hints, Any
 
 from cfglock import validator
 
 
-def helper_sig_class(name_class):
+def helper_sig_class(name_class: validator.ValidationContext) -> dict[str, Any]:
     """
     Retrive the signature of a class.
     """
@@ -22,6 +22,10 @@ def helper_sig_def(name_def):
     sig = inspect.signature(name_def)
 
     params = sig.parameters.items()
+
+    print("EXAMPLE", helper_sig_class(name_def))
+    print("SIG", sig)
+    print("PARAMS", params)
 
     return params, sig
 

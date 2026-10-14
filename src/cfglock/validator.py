@@ -131,7 +131,9 @@ def accept_new_keys(
         )
 
 
-def accept_new_value(current_value, new_value, context: ValidationContext) -> None:
+def accept_new_value[T](
+    current_value: T, new_value: T, context: ValidationContext
+) -> None:
     """
     General logic for accepting new values:
     1) the type of the new_value cannot be different than the type of the current_value
