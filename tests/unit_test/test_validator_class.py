@@ -4,6 +4,7 @@ import pytest
 
 from typing import get_type_hints, Any
 
+from collections.abc import Callable
 from cfglock import validator
 
 
@@ -41,15 +42,16 @@ def test_sig_context() -> None:
     assert ("current_path", str) in val_context_sig.items()
 
 
+name_defs: list[Callable] = [
+    validator.walk_yaml_with_no_order,
+    validator.walk_yaml_in_order,
+]
+
+
 @pytest.mark.parametrize(
-    "name_def",
-    [
-        validator.walk_yaml_with_no_order,
-        validator.walk_yaml_in_order,
-    ],
-    ids=["Signature without order", "Signature with order"],
+    "name_def", name_defs, ids=["Signature without order", "Signature with order"]
 )
-def test_sig_walk_n_order(name_def) -> None:
+def test_sig_walk_n_order(name_def: list[Callable]) -> None:
 
     walk_n_order_sig, sig = helper_sig_def(name_def=name_def)
 
