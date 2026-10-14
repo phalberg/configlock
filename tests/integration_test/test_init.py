@@ -5,7 +5,7 @@ import yaml
 from cfglock import cli
 
 
-def test_init_correct(runner_setup, fixture_dir):
+def test_init_correct(runner_setup, fixture_dir) -> None:
     fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:

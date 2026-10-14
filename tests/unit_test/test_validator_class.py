@@ -2,25 +2,21 @@ import inspect
 
 import pytest
 
+from typing import get_type_hints, Any
+
+from collections.abc import Callable
 from cfglock import validator
-from cfglock.validator import (
-    accept_new_keys,
-    accept_new_value,
-    walk_yaml_in_order,
-    walk_yaml_with_no_order,
-)
 
 
-def helper_sig_class(name_class):
+def helper_sig_class(name_class: validator.ValidationContext) -> dict[str, Any]:
     """
     Retrive the signature of a class.
     """
 
-    sig = inspect.getfullargspec(name_class).annotations
-
-    return sig
+    return get_type_hints(name_class)
 
 
+# TODO: simplifly the logic for this one perhaps
 def helper_sig_def(name_def):
     """
     Retrive parameters and signature of a defintion.
@@ -29,30 +25,33 @@ def helper_sig_def(name_def):
 
     params = sig.parameters.items()
 
+    print("EXAMPLE", helper_sig_class(name_def))
+    print("SIG", sig)
+    print("PARAMS", params)
+
     return params, sig
 
 
-def test_sig_context():
+def test_sig_context() -> None:
 
     val_context_sig = helper_sig_class(name_class=validator.ValidationContext)
-
     sig_list = ["new_path", "current_path", "order_matters"]
 
-    assert ("return", None) in val_context_sig.items()
     assert all(key in val_context_sig for key in sig_list)
     assert ("new_path", str) in val_context_sig.items()
     assert ("current_path", str) in val_context_sig.items()
 
 
+name_defs: list[Callable] = [
+    validator.walk_yaml_with_no_order,
+    validator.walk_yaml_in_order,
+]
+
+
 @pytest.mark.parametrize(
-    "name_def",
-    [
-        walk_yaml_with_no_order,
-        walk_yaml_in_order,
-    ],
-    ids=["Signature without order", "Signature with order"],
+    "name_def", name_defs, ids=["Signature without order", "Signature with order"]
 )
-def test_sig_walk_n_order(name_def):
+def test_sig_walk_n_order(name_def: list[Callable]) -> None:
 
     walk_n_order_sig, sig = helper_sig_def(name_def=name_def)
 
@@ -68,15 +67,15 @@ def test_sig_walk_n_order(name_def):
 @pytest.mark.parametrize(
     "name_def",
     [
-        accept_new_keys,
-        accept_new_value,
+        validator.accept_new_keys,
+        validator.accept_new_value,
     ],
     ids=[
         "check signature of accepting new keys",
         "check signature for accepting new values",
     ],
 )
-def test_accept_new_value_and_keys(name_def):
+def test_accept_new_value_and_keys(name_def) -> None:
     accept_new, sig = helper_sig_def(name_def)
 
     sig_list_keys = ["current_key", "new_key", "context"]

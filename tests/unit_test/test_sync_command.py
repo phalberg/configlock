@@ -2,7 +2,7 @@ from cfglock import cli
 from cfglock.validator import ConfigLockError
 
 
-def test_check_file_identicality(runner_with_lock_file_setup):
+def test_check_file_identicality(runner_with_lock_file_setup) -> None:
     # write YAML that matches the repository fixture `tests/test_files/config.yaml`
     with open("config.yaml", "w", encoding="utf-8") as f:
         f.write("version: 1\n\n")
@@ -15,7 +15,7 @@ def test_check_file_identicality(runner_with_lock_file_setup):
     assert result.exception is None
 
 
-def test_outdated_lock_file(runner_with_lock_file_setup):
+def test_outdated_lock_file(runner_with_lock_file_setup) -> None:
 
     with open("config.yaml", "w", encoding="utf-8") as f:
         f.write("name: example")

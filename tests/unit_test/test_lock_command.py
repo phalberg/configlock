@@ -4,7 +4,7 @@ from cfglock import cli
 from cfglock.validator import ConfigLockError, ValidationError
 
 
-def test_lock_works(runner_with_lock_file_setup):
+def test_lock_works(runner_with_lock_file_setup) -> None:
 
     with open("config.lock.json", "r") as f:
         output = json.load(f)
@@ -35,7 +35,7 @@ def test_lock_works(runner_with_lock_file_setup):
     assert output.get("new_entry") == 10
 
 
-def test_no_lock_file_available(runner, tmp_path):
+def test_no_lock_file_available(runner, tmp_path) -> None:
 
     path = tmp_path / "config.json"
     path.write_text(json.dumps({"name": "example", "object": False}))
@@ -58,7 +58,7 @@ def test_no_lock_file_available(runner, tmp_path):
     assert "lock file was not found" in str(result.exception).lower()
 
 
-def test_not_available_file(runner):
+def test_not_available_file(runner) -> None:
 
     result = runner.invoke(cli.app, ["lock", "some_file.json"])
 
@@ -66,7 +66,7 @@ def test_not_available_file(runner):
     assert isinstance(result.exception, FileNotFoundError)
 
 
-def test_compatibility_file(runner_with_lock_file_setup):
+def test_compatibility_file(runner_with_lock_file_setup) -> None:
 
     with open("incompatible_file.toml", "w", encoding="utf-8") as f:
         f.write('[section]\nkey = "value"')
@@ -80,7 +80,7 @@ def test_compatibility_file(runner_with_lock_file_setup):
     assert "not able to read" in str(result.exception).lower()
 
 
-def test_fail_new_key(runner_with_lock_file_setup):
+def test_fail_new_key(runner_with_lock_file_setup) -> None:
 
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("first_name: example")
@@ -92,7 +92,7 @@ def test_fail_new_key(runner_with_lock_file_setup):
     assert all(s in exc_str for s in ["in path", "expected", "found", "error code"])
 
 
-def test_fail_new_value(runner_with_lock_file_setup):
+def test_fail_new_value(runner_with_lock_file_setup) -> None:
     # change type for a nested value (environment should be a string)
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("app_settings:\n  environment: 12")
@@ -115,7 +115,7 @@ def test_fail_new_value(runner_with_lock_file_setup):
     )
 
 
-def test_order_matters_works(runner_with_lock_file_setup):
+def test_order_matters_works(runner_with_lock_file_setup) -> None:
 
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write("object: false")
@@ -133,7 +133,7 @@ def test_order_matters_works(runner_with_lock_file_setup):
     )
 
 
-def test_no_order_matters_works(runner_with_lock_file_setup):
+def test_no_order_matters_works(runner_with_lock_file_setup) -> None:
     # create YAML with same content but different order
     with open("new_file.yaml", "w", encoding="utf-8") as f:
         f.write(

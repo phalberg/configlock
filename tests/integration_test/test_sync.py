@@ -6,7 +6,7 @@ from cfglock import cli
 from cfglock.validator import ConfigLockError
 
 
-def test_sync_correct(runner_with_lock_file_setup, fixture_dir):
+def test_sync_correct(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "config.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -27,7 +27,7 @@ def test_sync_correct(runner_with_lock_file_setup, fixture_dir):
     assert not output["app_settings"]["maintenance_mode"]
 
 
-def test_sync_outdated_source_file(runner_with_lock_file_setup, fixture_dir):
+def test_sync_outdated_source_file(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "configbreak_namechange.yaml"
 
     with open(fixture, "r", encoding="utf-8") as f:
@@ -43,7 +43,7 @@ def test_sync_outdated_source_file(runner_with_lock_file_setup, fixture_dir):
     assert "lock file is outdated" in str(result.exception).lower()
 
 
-def test_sync_outdated_lock_file(runner_with_lock_file_setup, fixture_dir):
+def test_sync_outdated_lock_file(runner_with_lock_file_setup, fixture_dir) -> None:
     fixture = fixture_dir / "config.yaml"
 
     with open("config.lock.json", "w", encoding="utf-8") as f:
